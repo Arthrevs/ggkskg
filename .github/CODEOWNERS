@@ -1,0 +1,21 @@
+# ─────────────────────────────────────────────
+# SIH_2026 — CODEOWNERS
+# ─────────────────────────────────────────────
+# Changes to these paths require approval from the listed owners.
+# ⚠️ REPLACE @OWNER with your actual GitHub username or team name.
+#
+# For this to be enforced, enable branch protection on 'main':
+#   Settings → Branches → Add rule → main
+#   ✅ Require pull request reviews before merging
+#   ✅ Require review from Code Owners
+# ─────────────────────────────────────────────
+
+# CI/CD workflow files
+.github/workflows/*        @OWNER
+
+# Dependabot and CODEOWNERS config
+.github/dependabot.yml     @OWNER
+.github/CODEOWNERS          @OWNER
+
+# Environment and secrets config
+.env*                       @OWNER

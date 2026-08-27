@@ -1,0 +1,84 @@
+name: 📋 Issues – Auto Label
+
+on:
+  issues:
+    types: [ opened, edited ]
+
+permissions:
+  issues: write
+
+jobs:
+  auto-label:
+    name: Auto-label by keywords
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply labels based on title and body
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const text = `${issue.title} ${issue.body || ''}`.toLowerCase();
+            const labelsToAdd = [];
+
+            // ───── Keyword → Label mapping ─────
+            const rules = [
+              { keywords: ['bug', 'error', 'crash', 'broken', 'fix', 'fail', 'issue'],
+                label: '🐛 bug' },
+              { keywords: ['feature', 'request', 'add', 'enhance', 'improvement', 'suggest'],
+                label: '✨ feature' },
+              { keywords: ['docs', 'documentation', 'readme', 'guide', 'wiki'],
+                label: '📚 docs' },
+              { keywords: ['ui', 'frontend', 'css', 'react', 'component', 'page', 'layout'],
+                label: '🌐 frontend' },
+              { keywords: ['api', 'backend', 'database', 'server', 'endpoint', 'flask', 'django', 'fastapi'],
+                label: '🐍 backend' },
+              { keywords: ['security', 'auth', 'login', 'token', 'vulnerability', 'xss', 'injection'],
+                label: '🔐 security' },
+              { keywords: ['deploy', 'hosting', 'production', 'ci', 'pipeline', 'workflow'],
+                label: '🚀 devops' },
+              { keywords: ['test', 'testing', 'unit test', 'coverage', 'jest', 'pytest'],
+                label: '🧪 testing' },
+            ];
+
+            for (const rule of rules) {
+              if (rule.keywords.some(kw => text.includes(kw))) {
+                labelsToAdd.push(rule.label);
+              }
+            }
+
+            if (labelsToAdd.length > 0) {
+              // Ensure labels exist (create if missing)
+              const existingLabels = await github.rest.issues.listLabelsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100,
+              });
+              const existingNames = existingLabels.data.map(l => l.name);
+
+              for (const label of labelsToAdd) {
+                if (!existingNames.includes(label)) {
+                  try {
+                    await github.rest.issues.createLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      name: label,
+                      color: 'ededed',
+                    });
+                  } catch (e) {
+                    // Label may have been created concurrently
+                  }
+                }
+              }
+
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labelsToAdd,
+              });
+
+              console.log(`✅ Applied labels: ${labelsToAdd.join(', ')}`);
+            } else {
+              console.log('ℹ️ No keyword matches – no labels applied.');
+            }
