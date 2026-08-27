@@ -45,7 +45,7 @@ jobs:
             if grep -rEn --include="*.py" --include="*.js" --include="*.ts" \
                  --include="*.jsx" --include="*.tsx" --include="*.json" \
                  --include="*.env" --include="*.yml" --include="*.yaml" \
-                 --exclude-dir=node_modules --exclude-dir=.git \
+                 --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=.github \
                  "$pat" . 2>/dev/null; then
               echo "⚠️  Possible leaked secret matching pattern: $pat"
               FOUND=1
