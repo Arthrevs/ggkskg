@@ -1,0 +1,57 @@
+name: 🔐 Security – Leak Guard
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  secret-scan:
+    name: Secret & API Key Leak Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Gitleaks scans all commits for leaked secrets, tokens, passwords
+      - name: Gitleaks – full history scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: false   # no storage usage
+
+      # Extra grep-based check for common API key patterns in source
+      - name: Grep for hardcoded secrets
+        run: |
+          echo "🔍 Scanning for hardcoded API keys and secrets..."
+          PATTERNS=(
+            'AAAA[A-Za-z0-9_-]{7}:[A-Za-z0-9_-]{140}'   # Firebase server key
+            'AIza[0-9A-Za-z_-]{35}'                        # Google API key
+            'sk-[A-Za-z0-9]{48}'                           # OpenAI key
+            'ghp_[A-Za-z0-9]{36}'                          # GitHub PAT
+            'AKIA[0-9A-Z]{16}'                             # AWS Access Key
+            'mongodb\+srv://[^\s]+'                        # MongoDB connection string
+            'postgres://[^\s]+'                            # Postgres connection string
+            'mysql://[^\s]+'                               # MySQL connection string
+          )
+          FOUND=0
+          for pat in "${PATTERNS[@]}"; do
+            if grep -rEn --include="*.py" --include="*.js" --include="*.ts" \
+                 --include="*.jsx" --include="*.tsx" --include="*.json" \
+                 --include="*.env" --include="*.yml" --include="*.yaml" \
+                 --exclude-dir=node_modules --exclude-dir=.git \
+                 "$pat" . 2>/dev/null; then
+              echo "⚠️  Possible leaked secret matching pattern: $pat"
+              FOUND=1
+            fi
+          done
+          if [ "$FOUND" -eq 1 ]; then
+            echo "❌ Potential secrets found! Review the matches above."
+            exit 1
+          fi
+          echo "✅ No hardcoded secrets detected."
