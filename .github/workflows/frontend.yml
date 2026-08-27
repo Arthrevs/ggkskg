@@ -1,0 +1,124 @@
+name: 🌐 Frontend – Node CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    paths:
+      - '**.js'
+      - '**.ts'
+      - '**.jsx'
+      - '**.tsx'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'frontend/**'
+      - '.github/workflows/frontend.yml'
+  pull_request:
+    branches: [ "main", "master" ]
+    paths:
+      - '**.js'
+      - '**.ts'
+      - '**.jsx'
+      - '**.tsx'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'frontend/**'
+      - '.github/workflows/frontend.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  frontend-check:
+    name: Audit, Clashes & Version Lock
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"    # locked version – prevents version clash
+
+      - name: Verify Node version
+        run: |
+          echo "🟢 Node version:"
+          node --version
+          echo "📦 npm version:"
+          npm --version
+
+      - name: Detect frontend directory
+        id: detect
+        run: |
+          if [ -f frontend/package.json ]; then
+            echo "dir=frontend" >> $GITHUB_OUTPUT
+          elif [ -f package.json ]; then
+            echo "dir=." >> $GITHUB_OUTPUT
+          else
+            echo "dir=none" >> $GITHUB_OUTPUT
+            echo "⚠️ No package.json found – skipping frontend checks."
+          fi
+
+      - name: Install dependencies
+        if: steps.detect.outputs.dir != 'none'
+        working-directory: ${{ steps.detect.outputs.dir }}
+        run: npm install
+
+      - name: Lockfile consistency check
+        if: steps.detect.outputs.dir != 'none'
+        working-directory: ${{ steps.detect.outputs.dir }}
+        run: |
+          echo "🔒 Checking lockfile consistency..."
+          if [ -f package-lock.json ]; then
+            npm ci --dry-run 2>&1 || {
+              echo "❌ package-lock.json is out of sync with package.json!"
+              echo "Run 'npm install' locally and commit the updated lockfile."
+              exit 1
+            }
+            echo "✅ Lockfile is consistent."
+          else
+            echo "⚠️ No package-lock.json found. Consider committing it for reproducible builds."
+          fi
+
+      - name: Peer dependency clash check
+        if: steps.detect.outputs.dir != 'none'
+        working-directory: ${{ steps.detect.outputs.dir }}
+        run: |
+          echo "🔗 Checking for peer dependency clashes..."
+          npm ls --all 2>&1 | grep "ERESOLVE\|peer dep\|invalid" || echo "✅ No peer dependency clashes."
+
+      - name: Duplicate package check
+        if: steps.detect.outputs.dir != 'none'
+        working-directory: ${{ steps.detect.outputs.dir }}
+        run: |
+          echo "📦 Checking for duplicate packages..."
+          npm dedupe --dry-run 2>&1 || true
+          echo "✅ Duplicate check complete."
+
+      - name: Vulnerability audit
+        if: steps.detect.outputs.dir != 'none'
+        working-directory: ${{ steps.detect.outputs.dir }}
+        run: |
+          echo "🛡️ Auditing for known vulnerabilities..."
+          npm audit --audit-level=high || true
+
+      - name: Check for hardcoded secrets in frontend
+        run: |
+          echo "🔑 Checking JS/TS files for hardcoded credentials..."
+          FOUND=0
+          if grep -rEnI --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" \
+            '(apiKey|secretKey|password|token|auth_token)\s*[:=]\s*["\x27][A-Za-z0-9+/=_-]{8,}' \
+            --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=dist --exclude-dir=build \
+            . 2>/dev/null; then
+            echo "⚠️  Possible hardcoded credentials found in frontend files!"
+            FOUND=1
+          fi
+          if [ "$FOUND" -eq 1 ]; then
+            echo "❌ Use environment variables (REACT_APP_, VITE_, NEXT_PUBLIC_) instead."
+            exit 1
+          fi
+          echo "✅ No hardcoded credentials in frontend files."
+
+      - name: Lint
+        if: steps.detect.outputs.dir != 'none'
+        working-directory: ${{ steps.detect.outputs.dir }}
+        run: npm run lint --if-present
