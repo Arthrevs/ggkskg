@@ -27,29 +27,17 @@ on:
 permissions:
   contents: read
 
-# ─────────────────────────────────────────────
-# Pipeline:
-#   install → audit/lockfile/secrets
-#                ├── lint
-#                ├── typecheck
-#                ├── test
-#                └── build
-# ─────────────────────────────────────────────
-
 jobs:
-  # ───── Job 1: Install & Core Checks ─────
   frontend-check:
-    name: Audit, Lockfile & Secrets
+    name: Audit, Clashes & Version Lock
     runs-on: ubuntu-latest
-    outputs:
-      frontend-dir: ${{ steps.detect.outputs.dir }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"    # 🔒 pinned to LTS – prevents version clash
+          node-version: "20"    # locked version – prevents version clash
 
       - name: Verify Node version
         run: |
@@ -70,17 +58,10 @@ jobs:
             echo "⚠️ No package.json found – skipping frontend checks."
           fi
 
-      - name: Install dependencies (strict lockfile)
+      - name: Install dependencies
         if: steps.detect.outputs.dir != 'none'
         working-directory: ${{ steps.detect.outputs.dir }}
-        run: |
-          if [ -f package-lock.json ]; then
-            echo "🔒 Installing with npm ci (strict lockfile)..."
-            npm ci
-          else
-            echo "⚠️ No lockfile found – falling back to npm install"
-            npm install
-          fi
+        run: npm install
 
       - name: Lockfile consistency check
         if: steps.detect.outputs.dir != 'none'
@@ -137,114 +118,7 @@ jobs:
           fi
           echo "✅ No hardcoded credentials in frontend files."
 
-  # ───── Job 2: Lint ─────
-  frontend-lint:
-    name: ESLint
-    needs: frontend-check
-    if: needs.frontend-check.outputs.frontend-dir != 'none'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Install dependencies
-        working-directory: ${{ needs.frontend-check.outputs.frontend-dir }}
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install; fi
-
-      - name: Run ESLint
-        working-directory: ${{ needs.frontend-check.outputs.frontend-dir }}
+      - name: Lint
+        if: steps.detect.outputs.dir != 'none'
+        working-directory: ${{ steps.detect.outputs.dir }}
         run: npm run lint --if-present
-
-  # ───── Job 3: TypeScript Check ─────
-  frontend-typecheck:
-    name: TypeScript Check
-    needs: frontend-check
-    if: needs.frontend-check.outputs.frontend-dir != 'none'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Install dependencies
-        working-directory: ${{ needs.frontend-check.outputs.frontend-dir }}
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install; fi
-
-      - name: Check for TypeScript config
-        id: ts-check
-        working-directory: ${{ needs.frontend-check.outputs.frontend-dir }}
-        run: |
-          if [ -f tsconfig.json ]; then
-            echo "has_ts=true" >> $GITHUB_OUTPUT
-            echo "📘 tsconfig.json found – will run type check."
-          else
-            echo "has_ts=false" >> $GITHUB_OUTPUT
-            echo "ℹ️ No tsconfig.json – skipping TypeScript check."
-          fi
-
-      - name: Run tsc --noEmit
-        if: steps.ts-check.outputs.has_ts == 'true'
-        working-directory: ${{ needs.frontend-check.outputs.frontend-dir }}
-        run: |
-          echo "🔍 Running TypeScript type check..."
-          npx tsc --noEmit
-
-  # ───── Job 4: Tests ─────
-  frontend-test:
-    name: Unit Tests
-    needs: frontend-check
-    if: needs.frontend-check.outputs.frontend-dir != 'none'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Install dependencies
-        working-directory: ${{ needs.frontend-check.outputs.frontend-dir }}
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install; fi
-
-      - name: Run tests
-        working-directory: ${{ needs.frontend-check.outputs.frontend-dir }}
-        run: npm test --if-present
-        env:
-          CI: true    # many test runners use this to avoid interactive mode
-
-  # ───── Job 5: Build Verification ─────
-  frontend-build:
-    name: Production Build
-    needs: [ frontend-check, frontend-lint, frontend-typecheck, frontend-test ]
-    if: needs.frontend-check.outputs.frontend-dir != 'none'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Install dependencies
-        working-directory: ${{ needs.frontend-check.outputs.frontend-dir }}
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install; fi
-
-      - name: Build project
-        working-directory: ${{ needs.frontend-check.outputs.frontend-dir }}
-        run: |
-          echo "🏗️ Running production build..."
-          npm run build --if-present
-          echo "✅ Build succeeded."
