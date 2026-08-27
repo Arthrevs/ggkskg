@@ -11,11 +11,9 @@
 # ─────────────────────────────────────────────
 
 # CI/CD workflow files
-.github/workflows/*        @OWNER
+.github/workflows/*        @Arthrevs
 
 # Dependabot and CODEOWNERS config
-.github/dependabot.yml     @OWNER
-.github/CODEOWNERS          @OWNER
+.github/dependabot.yml     @Arthrevs
+.github/CODEOWNERS          @Arthrevs
 
-# Environment and secrets config
-.env*                       @OWNER
