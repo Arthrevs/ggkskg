@@ -15,25 +15,55 @@ permissions:
   security-events: write
 
 jobs:
-  analyze:
-    name: CodeQL (${{ matrix.language }})
+  # ───── Detect which languages actually exist ─────
+  detect-languages:
+    name: Detect Languages
+    runs-on: ubuntu-latest
+    outputs:
+      has-js: ${{ steps.check.outputs.has_js }}
+      has-python: ${{ steps.check.outputs.has_python }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for source files
+        id: check
+        run: |
+          # Check for JavaScript/TypeScript files (excluding node_modules, .github)
+          if find . -type f \( -name '*.js' -o -name '*.ts' -o -name '*.jsx' -o -name '*.tsx' \) \
+            -not -path './node_modules/*' -not -path './.github/*' -not -path './dist/*' \
+            | grep -q .; then
+            echo "has_js=true" >> $GITHUB_OUTPUT
+            echo "✅ JavaScript/TypeScript source files found."
+          else
+            echo "has_js=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No JavaScript/TypeScript source files — skipping JS analysis."
+          fi
+
+          # Check for Python files
+          if find . -type f -name '*.py' \
+            -not -path './.venv/*' -not -path './venv/*' -not -path './.github/*' \
+            | grep -q .; then
+            echo "has_python=true" >> $GITHUB_OUTPUT
+            echo "✅ Python source files found."
+          else
+            echo "has_python=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No Python source files — skipping Python analysis."
+          fi
+
+  # ───── JavaScript / TypeScript ─────
+  analyze-js:
+    name: CodeQL (JavaScript/TypeScript)
+    needs: detect-languages
+    if: needs.detect-languages.outputs.has-js == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 360
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'javascript-typescript', 'python' ]
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: ${{ matrix.language }}
-          # Use extended queries for more thorough analysis
+          languages: javascript-typescript
           queries: security-extended
 
       - name: Autobuild
@@ -42,4 +72,28 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:${{ matrix.language }}"
+          category: "/language:javascript-typescript"
+
+  # ───── Python ─────
+  analyze-python:
+    name: CodeQL (Python)
+    needs: detect-languages
+    if: needs.detect-languages.outputs.has-python == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          queries: security-extended
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:python"
