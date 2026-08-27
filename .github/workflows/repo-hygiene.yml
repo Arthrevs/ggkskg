@@ -1,0 +1,115 @@
+name: 🧹 Repo Hygiene Check
+
+on:
+  pull_request:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  hygiene:
+    name: Repository Hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0    # full history for diff analysis
+
+      # ───── Large file check (> 5 MB) ─────
+      - name: Check for large files
+        run: |
+          echo "📏 Checking for files larger than 5 MB..."
+          LARGE_FILES=$(find . -not -path './.git/*' -type f -size +5M 2>/dev/null)
+          if [ -n "$LARGE_FILES" ]; then
+            echo "❌ Large files detected (> 5 MB):"
+            echo "$LARGE_FILES" | while read f; do
+              SIZE=$(du -sh "$f" | cut -f1)
+              echo "  ⚠️  $f ($SIZE)"
+            done
+            echo ""
+            echo "Consider using Git LFS or removing these files."
+            exit 1
+          fi
+          echo "✅ No oversized files."
+
+      # ───── .env files check ─────
+      - name: Check for .env files
+        run: |
+          echo "🔐 Checking for committed .env files..."
+          ENV_FILES=$(find . -not -path './.git/*' -name '.env' -o -name '.env.*' -o -name '.env.local' 2>/dev/null | grep -v node_modules || true)
+          if [ -n "$ENV_FILES" ]; then
+            echo "❌ Environment files detected in repository:"
+            echo "$ENV_FILES"
+            echo ""
+            echo "These should NEVER be committed. Add them to .gitignore."
+            exit 1
+          fi
+          echo "✅ No .env files committed."
+
+      # ───── node_modules check ─────
+      - name: Check for node_modules
+        run: |
+          echo "📦 Checking for committed node_modules..."
+          if [ -d "node_modules" ] || [ -d "frontend/node_modules" ]; then
+            echo "❌ node_modules/ directory found in repository!"
+            echo "This should NEVER be committed. Add it to .gitignore."
+            exit 1
+          fi
+          echo "✅ No node_modules committed."
+
+      # ───── Build artifacts check ─────
+      - name: Check for build artifacts
+        run: |
+          echo "🏗️ Checking for committed build artifacts..."
+          DIRS_FOUND=""
+          for dir in dist build __pycache__ .next out .nuxt; do
+            FOUND=$(find . -not -path './.git/*' -type d -name "$dir" 2>/dev/null | head -5)
+            if [ -n "$FOUND" ]; then
+              DIRS_FOUND="$DIRS_FOUND\n$FOUND"
+            fi
+          done
+          if [ -n "$DIRS_FOUND" ]; then
+            echo "❌ Build artifact directories found:"
+            echo -e "$DIRS_FOUND"
+            echo ""
+            echo "These should be in .gitignore, not committed."
+            exit 1
+          fi
+          echo "✅ No build artifact directories."
+
+      # ───── Binary files check ─────
+      - name: Check for unwanted binaries
+        run: |
+          echo "🔍 Checking for unwanted binary files..."
+          BINARIES=$(find . -not -path './.git/*' \
+            \( -name '*.exe' -o -name '*.dll' -o -name '*.so' \
+               -o -name '*.dylib' -o -name '*.bin' -o -name '*.msi' \
+               -o -name '*.dmg' -o -name '*.app' \) \
+            2>/dev/null)
+          if [ -n "$BINARIES" ]; then
+            echo "❌ Binary files detected:"
+            echo "$BINARIES"
+            echo ""
+            echo "Compiled binaries should not be in the repository."
+            exit 1
+          fi
+          echo "✅ No unwanted binaries."
+
+      # ───── .gitignore existence check ─────
+      - name: Check for .gitignore
+        run: |
+          echo "📄 Checking for .gitignore..."
+          if [ ! -f .gitignore ]; then
+            echo "⚠️ No .gitignore found! Every project should have one."
+            exit 1
+          fi
+          echo "✅ .gitignore exists."
+
+      # ───── Summary ─────
+      - name: Hygiene summary
+        run: |
+          echo ""
+          echo "═══════════════════════════════════════"
+          echo "  🧹 Repository hygiene checks passed!"
+          echo "═══════════════════════════════════════"
