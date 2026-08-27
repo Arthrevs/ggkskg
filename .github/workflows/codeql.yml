@@ -23,7 +23,7 @@ jobs:
       has-js: ${{ steps.check.outputs.has_js }}
       has-python: ${{ steps.check.outputs.has_python }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check for source files
         id: check
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
