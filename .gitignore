@@ -2,6 +2,9 @@
 # SIH_2026 — .gitignore
 # ─────────────────────────────────────────────
 
+# ───── Agent Rules ─────
+AGENTS.md
+
 # ───── Node / Frontend ─────
 node_modules/
 dist/
