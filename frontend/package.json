@@ -1,0 +1,15 @@
+{
+  "name": "sih26027-frontend",
+  "version": "1.0.0",
+  "description": "Vanilla frontend for the Automatic Block Planning System (SIH26027)",
+  "scripts": {
+    "dev": "serve . -l 3000 --cors"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  },
+  "dependencies": {
+    "lucide-react": "^1.40.0",
+    "react-router-dom": "^7.18.3"
+  }
+}
