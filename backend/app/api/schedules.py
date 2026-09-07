@@ -62,19 +62,19 @@ def compare_schedules(
     return response
 
 
-@router.get("/{week_start_date}", response_model=ScheduleRunResponse)
+@router.get("/{week_start_date}", response_model=ScheduleRunResponse | None)
 def get_schedule_details(
     week_start_date: date,
     mode: str = Query("optimized", description="Must be 'manual' or 'optimized'"),
     db: Session = Depends(get_db)
 ):
-    """Retrieve an existing schedule run."""
+    """Retrieve an existing schedule run. Returns null if not found."""
     if mode not in ["manual", "optimized"]:
         raise HTTPException(status_code=400, detail="Invalid mode")
         
     result = get_schedule(db, week_start_date, mode)
     if not result:
-        raise HTTPException(status_code=404, detail="Schedule run not found")
+        return None
         
     db_run = result["run"]
     response_data = db_run.__dict__.copy()
