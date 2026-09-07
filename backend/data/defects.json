@@ -1,0 +1,257 @@
+{
+  "corridor": "JP-AII",
+  "generated_date": "2026-09-05",
+  "defects": [
+    {
+      "defect_id": "DEF-001",
+      "department": "TMS",
+      "department_full": "Track Management System (Engineering)",
+      "description": "Rail fracture on UP line — immediate thermit welding required",
+      "km_location": 41.65,
+      "section_from": "BOBS",
+      "section_to": "DHND",
+      "severity": "critical",
+      "duration_minutes": 120,
+      "equipment_required": [
+        "Thermit welding kit",
+        "Rail cutting machine"
+      ],
+      "crew_size": 8,
+      "overdue_days": 12
+    },
+    {
+      "defect_id": "DEF-002",
+      "department": "SMMS",
+      "department_full": "Signal Maintenance Management System (S&T)",
+      "description": "Axle counter failure — track circuit showing false occupancy",
+      "km_location": 45.23,
+      "section_from": "DHND",
+      "section_to": "HDA",
+      "severity": "critical",
+      "duration_minutes": 90,
+      "equipment_required": [
+        "Axle counter reset unit",
+        "Signal testing kit"
+      ],
+      "crew_size": 4,
+      "overdue_days": 8
+    },
+    {
+      "defect_id": "DEF-003",
+      "department": "TDMS",
+      "department_full": "Traction Distribution Management System (Electrical)",
+      "description": "OHE contact wire sagging below minimum height — pantograph snag risk",
+      "km_location": 48.82,
+      "section_from": "HDA",
+      "section_to": "FL",
+      "severity": "critical",
+      "duration_minutes": 150,
+      "equipment_required": [
+        "OHE tower wagon",
+        "Tension adjusting gear"
+      ],
+      "crew_size": 6,
+      "overdue_days": 15
+    },
+    {
+      "defect_id": "DEF-004",
+      "department": "TMS",
+      "department_full": "Track Management System (Engineering)",
+      "description": "Ballast depression at curve — track geometry out of tolerance",
+      "km_location": 10.88,
+      "section_from": "DNK",
+      "section_to": "SHNX",
+      "severity": "high",
+      "duration_minutes": 90,
+      "equipment_required": [
+        "Ballast tamping machine"
+      ],
+      "crew_size": 6,
+      "overdue_days": 5
+    },
+    {
+      "defect_id": "DEF-005",
+      "department": "SMMS",
+      "department_full": "Signal Maintenance Management System (S&T)",
+      "description": "Point machine sluggish — exceeding 6-second throw time",
+      "km_location": 54.19,
+      "section_from": "FL",
+      "section_to": "FL",
+      "severity": "high",
+      "duration_minutes": 60,
+      "equipment_required": [
+        "Point machine testing unit"
+      ],
+      "crew_size": 3,
+      "overdue_days": 3
+    },
+    {
+      "defect_id": "DEF-006",
+      "department": "TDMS",
+      "department_full": "Traction Distribution Management System (Electrical)",
+      "description": "Section insulator cracked — replacement needed before monsoon",
+      "km_location": 64.35,
+      "section_from": "NRI",
+      "section_to": "SK",
+      "severity": "medium",
+      "duration_minutes": 120,
+      "equipment_required": [
+        "OHE tower wagon",
+        "Section insulator kit"
+      ],
+      "crew_size": 5,
+      "overdue_days": 10
+    },
+    {
+      "defect_id": "DEF-007",
+      "department": "TMS",
+      "department_full": "Track Management System (Engineering)",
+      "description": "Concrete sleeper cracking — batch replacement needed",
+      "km_location": 84.66,
+      "section_from": "GLTA",
+      "section_to": "TL",
+      "severity": "medium",
+      "duration_minutes": 180,
+      "equipment_required": [
+        "Sleeper laying crane",
+        "Concrete sleepers"
+      ],
+      "crew_size": 10,
+      "overdue_days": 20
+    },
+    {
+      "defect_id": "DEF-008",
+      "department": "SMMS",
+      "department_full": "Signal Maintenance Management System (S&T)",
+      "description": "LED signal lamp dim on DN home signal",
+      "km_location": 113.03,
+      "section_from": "GEK",
+      "section_to": "LR",
+      "severity": "low",
+      "duration_minutes": 30,
+      "equipment_required": [
+        "LED lamp replacement kit"
+      ],
+      "crew_size": 2,
+      "overdue_days": 1
+    },
+    {
+      "defect_id": "DEF-009",
+      "department": "TMS",
+      "department_full": "Track Management System (Engineering)",
+      "description": "Level crossing gate hinge worn — manual operation difficulty",
+      "km_location": 21.77,
+      "section_from": "SHNX",
+      "section_to": "BOBS",
+      "severity": "medium",
+      "duration_minutes": 60,
+      "equipment_required": [
+        "Welding equipment",
+        "Gate hardware"
+      ],
+      "crew_size": 4,
+      "overdue_days": 7
+    },
+    {
+      "defect_id": "DEF-010",
+      "department": "TDMS",
+      "department_full": "Traction Distribution Management System (Electrical)",
+      "description": "Return conductor joint resistance high — earth leakage risk",
+      "km_location": 123.75,
+      "section_from": "LR",
+      "section_to": "MD",
+      "severity": "high",
+      "duration_minutes": 45,
+      "equipment_required": [
+        "Resistance testing meter",
+        "Conductor jointing kit"
+      ],
+      "crew_size": 3,
+      "overdue_days": 4
+    },
+    {
+      "defect_id": "DEF-011",
+      "department": "TMS",
+      "department_full": "Track Management System (Engineering)",
+      "description": "Bridge expansion joint seized — thermal stress risk",
+      "km_location": 128.8,
+      "section_from": "MD",
+      "section_to": "AII",
+      "severity": "high",
+      "duration_minutes": 90,
+      "equipment_required": [
+        "Hydraulic jacks",
+        "Expansion joint kit"
+      ],
+      "crew_size": 6,
+      "overdue_days": 6
+    },
+    {
+      "defect_id": "DEF-012",
+      "department": "SMMS",
+      "department_full": "Signal Maintenance Management System (S&T)",
+      "description": "Block instrument erratic — token exchange delay",
+      "km_location": 52.4,
+      "section_from": "HDA",
+      "section_to": "FL",
+      "severity": "medium",
+      "duration_minutes": 75,
+      "equipment_required": [
+        "Block instrument testing set"
+      ],
+      "crew_size": 2,
+      "overdue_days": 9
+    },
+    {
+      "defect_id": "DEF-013",
+      "department": "TDMS",
+      "department_full": "Traction Distribution Management System (Electrical)",
+      "description": "Catenary wire wear exceeding limits near neutral section",
+      "km_location": 94.82,
+      "section_from": "TL",
+      "section_to": "KSG",
+      "severity": "medium",
+      "duration_minutes": 150,
+      "equipment_required": [
+        "OHE tower wagon",
+        "Catenary wire drum"
+      ],
+      "crew_size": 8,
+      "overdue_days": 14
+    },
+    {
+      "defect_id": "DEF-014",
+      "department": "TMS",
+      "department_full": "Track Management System (Engineering)",
+      "description": "Track alignment deviation at curve entry — speed restriction imposed",
+      "km_location": 2.0,
+      "section_from": "JP",
+      "section_to": "KKU",
+      "severity": "low",
+      "duration_minutes": 120,
+      "equipment_required": [
+        "Track geometry trolley",
+        "Alignment jacks"
+      ],
+      "crew_size": 8,
+      "overdue_days": 2
+    },
+    {
+      "defect_id": "DEF-015",
+      "department": "SMMS",
+      "department_full": "Signal Maintenance Management System (S&T)",
+      "description": "Communication cable damaged — backup BSNL line active",
+      "km_location": 74.51,
+      "section_from": "SK",
+      "section_to": "SALI",
+      "severity": "low",
+      "duration_minutes": 90,
+      "equipment_required": [
+        "Cable jointing kit",
+        "Cable locator"
+      ],
+      "crew_size": 3,
+      "overdue_days": 11
+    }
+  ]
+}

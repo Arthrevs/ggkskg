@@ -1,0 +1,702 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.2, pytest-9.1.1, pluggy-1.6.0 -- /Users/shivamkumar/Documents/ggskgs back-end/backend/.venv/bin/python3.14
+cachedir: .pytest_cache
+rootdir: /Users/shivamkumar/Documents/ggskgs back-end/backend
+plugins: anyio-4.15.0
+collecting ... collected 1 item
+
+tests/test_api_schedule.py::test_schedule_run_api FAILED                 [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_schedule_run_api _____________________________
+
+client = <starlette.testclient.TestClient object at 0x10cba78c0>
+session = <sqlalchemy.orm.session.Session object at 0x10cdd2d50>
+
+    def test_schedule_run_api(client, session):
+        # Setup some basic data
+>       client.post("/api/mock-data/generate?seed=123&clear=true")
+
+tests/test_api_schedule.py:8: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.14/site-packages/starlette/testclient.py:556: in post
+    return super().post(
+.venv/lib/python3.14/site-packages/httpx/_client.py:1144: in post
+    return self.request(
+.venv/lib/python3.14/site-packages/starlette/testclient.py:455: in request
+    return super().request(
+.venv/lib/python3.14/site-packages/httpx/_client.py:825: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.14/site-packages/httpx/_client.py:914: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.14/site-packages/httpx/_client.py:942: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.14/site-packages/httpx/_client.py:979: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.14/site-packages/httpx/_client.py:1014: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.14/site-packages/starlette/testclient.py:354: in handle_request
+    raise exc
+.venv/lib/python3.14/site-packages/starlette/testclient.py:351: in handle_request
+    portal.call(self.app, scope, receive, send)
+.venv/lib/python3.14/site-packages/anyio/from_thread.py:340: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/concurrent/futures/_base.py:450: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/concurrent/futures/_base.py:395: in __get_result
+    raise self._exception
+.venv/lib/python3.14/site-packages/anyio/from_thread.py:265: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.14/site-packages/fastapi/applications.py:1163: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.14/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.14/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.14/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.14/site-packages/starlette/middleware/cors.py:88: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.14/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.14/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.14/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.14/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.14/site-packages/starlette/routing.py:670: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.14/site-packages/fastapi/routing.py:2734: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.14/site-packages/fastapi/routing.py:1780: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv/lib/python3.14/site-packages/fastapi/routing.py:2789: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv/lib/python3.14/site-packages/fastapi/routing.py:1800: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv/lib/python3.14/site-packages/fastapi/routing.py:1279: in handle
+    await app(scope, receive, send)
+.venv/lib/python3.14/site-packages/fastapi/routing.py:158: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.14/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.14/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.14/site-packages/fastapi/routing.py:144: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.14/site-packages/fastapi/routing.py:706: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.14/site-packages/fastapi/routing.py:354: in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.14/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.14/site-packages/anyio/to_thread.py:65: in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+.venv/lib/python3.14/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+app/api/mock_data.py:20: in trigger_generate_mock_data
+    result = generate_mock_data(db, seed=seed, clear_existing=clear)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/services/mock_data.py:45: in generate_mock_data
+    eng_dept = next((d for d in departments if d.code == "ENG"), departments[0])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <list_iterator object at 0x1044bd450>
+
+>   eng_dept = next((d for d in departments if d.code == "ENG"), departments[0])
+                                               ^^^^^^
+E   AttributeError: 'Department' object has no attribute 'code'
+
+app/services/mock_data.py:45: AttributeError
+---------------------------- Captured stdout setup -----------------------------
+2026-09-05 16:51:26,661 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("departments")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("departments")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("sections")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("sections")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("maintenance_requests")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("maintenance_requests")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("schedule_assignments")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("schedule_assignments")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("schedule_runs")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("schedule_runs")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("block_windows")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("block_windows")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("work_types")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("work_types")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("work_compatibility_rules")
+2026-09-05 16:51:26,662 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,663 INFO sqlalchemy.engine.Engine PRAGMA temp.table_info("work_compatibility_rules")
+2026-09-05 16:51:26,663 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-09-05 16:51:26,663 INFO sqlalchemy.engine.Engine 
+CREATE TABLE departments (
+	id INTEGER NOT NULL, 
+	name VARCHAR(50) NOT NULL, 
+	short_code VARCHAR(10) NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_department_name_nonempty CHECK (length(name) > 0), 
+	CONSTRAINT ck_department_short_code_nonempty CHECK (length(short_code) > 0), 
+	UNIQUE (name), 
+	UNIQUE (short_code)
+)
+
+
+2026-09-05 16:51:26,663 INFO sqlalchemy.engine.Engine [no key 0.00003s] ()
+2026-09-05 16:51:26,664 INFO sqlalchemy.engine.Engine 
+CREATE TABLE sections (
+	id INTEGER NOT NULL, 
+	code VARCHAR(20) NOT NULL, 
+	name VARCHAR(200) NOT NULL, 
+	window_start_hour INTEGER NOT NULL, 
+	window_duration_hours INTEGER NOT NULL, 
+	mega_day VARCHAR(10), 
+	mega_duration_hours INTEGER, 
+	slot_capacity INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_section_code_nonempty CHECK (length(code) > 0), 
+	CONSTRAINT ck_section_name_nonempty CHECK (length(name) > 0), 
+	CONSTRAINT ck_section_window_start_hour_range CHECK (window_start_hour >= 0 AND window_start_hour < 1440), 
+	CONSTRAINT ck_section_window_duration_range CHECK (window_duration_hours > 0 AND window_duration_hours <= 1440), 
+	CONSTRAINT ck_section_slot_capacity_positive CHECK (slot_capacity > 0), 
+	CONSTRAINT ck_section_mega_duration_positive CHECK (mega_duration_hours IS NULL OR mega_duration_hours > 0), 
+	UNIQUE (code)
+)
+
+
+2026-09-05 16:51:26,664 INFO sqlalchemy.engine.Engine [no key 0.00003s] ()
+2026-09-05 16:51:26,664 INFO sqlalchemy.engine.Engine CREATE INDEX ix_section_code ON sections (code)
+2026-09-05 16:51:26,664 INFO sqlalchemy.engine.Engine [no key 0.00003s] ()
+2026-09-05 16:51:26,665 INFO sqlalchemy.engine.Engine 
+CREATE TABLE schedule_runs (
+	id INTEGER NOT NULL, 
+	week_start_date DATE NOT NULL, 
+	mode VARCHAR(20) NOT NULL, 
+	total_hours FLOAT NOT NULL, 
+	total_windows INTEGER NOT NULL, 
+	co_located_windows INTEGER NOT NULL, 
+	unscheduled_count INTEGER NOT NULL, 
+	objective_value FLOAT, 
+	solve_time_ms INTEGER NOT NULL, 
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_run_mode_valid CHECK (mode IN ('manual', 'optimized')), 
+	CONSTRAINT ck_run_total_hours_nonneg CHECK (total_hours >= 0), 
+	CONSTRAINT ck_run_total_windows_nonneg CHECK (total_windows >= 0), 
+	CONSTRAINT ck_run_coloc_nonneg CHECK (co_located_windows >= 0), 
+	CONSTRAINT ck_run_unsched_nonneg CHECK (unscheduled_count >= 0), 
+	CONSTRAINT ck_run_solve_time_nonneg CHECK (solve_time_ms >= 0)
+)
+
+
+2026-09-05 16:51:26,665 INFO sqlalchemy.engine.Engine [no key 0.00003s] ()
+2026-09-05 16:51:26,665 INFO sqlalchemy.engine.Engine CREATE INDEX ix_run_week_mode ON schedule_runs (week_start_date, mode)
+2026-09-05 16:51:26,665 INFO sqlalchemy.engine.Engine [no key 0.00004s] ()
+2026-09-05 16:51:26,665 INFO sqlalchemy.engine.Engine 
+CREATE TABLE block_windows (
+	id INTEGER NOT NULL, 
+	section_id INTEGER NOT NULL, 
+	week_start_date DATE NOT NULL, 
+	day_of_week VARCHAR(10) NOT NULL, 
+	start_minute INTEGER NOT NULL, 
+	duration_minutes INTEGER NOT NULL, 
+	slot_capacity INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_bw_start_minute_range CHECK (start_minute >= 0 AND start_minute < 1440), 
+	CONSTRAINT ck_bw_duration_range CHECK (duration_minutes > 0 AND duration_minutes <= 1440), 
+	CONSTRAINT ck_bw_slot_capacity_positive CHECK (slot_capacity > 0), 
+	CONSTRAINT ck_bw_day_of_week_valid CHECK (day_of_week IN ('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')), 
+	CONSTRAINT uq_bw_section_week_day_start UNIQUE (section_id, week_start_date, day_of_week, start_minute), 
+	FOREIGN KEY(section_id) REFERENCES sections (id) ON DELETE CASCADE
+)
+
+
+2026-09-05 16:51:26,665 INFO sqlalchemy.engine.Engine [no key 0.00002s] ()
+2026-09-05 16:51:26,666 INFO sqlalchemy.engine.Engine CREATE INDEX ix_bw_section_id ON block_windows (section_id)
+2026-09-05 16:51:26,666 INFO sqlalchemy.engine.Engine [no key 0.00002s] ()
+2026-09-05 16:51:26,666 INFO sqlalchemy.engine.Engine CREATE INDEX ix_bw_week_start_date ON block_windows (week_start_date)
+2026-09-05 16:51:26,666 INFO sqlalchemy.engine.Engine [no key 0.00002s] ()
+2026-09-05 16:51:26,666 INFO sqlalchemy.engine.Engine 
+CREATE TABLE work_types (
+	id INTEGER NOT NULL, 
+	name VARCHAR(100) NOT NULL, 
+	department_id INTEGER NOT NULL, 
+	requires_traffic_block BOOLEAN NOT NULL, 
+	requires_power_block BOOLEAN NOT NULL, 
+	requires_ohe_isolation BOOLEAN NOT NULL, 
+	requires_signal_disconnection BOOLEAN NOT NULL, 
+	PRIMARY KEY (id), 
+	UNIQUE (name), 
+	FOREIGN KEY(department_id) REFERENCES departments (id) ON DELETE CASCADE
+)
+
+
+2026-09-05 16:51:26,666 INFO sqlalchemy.engine.Engine [no key 0.00002s] ()
+2026-09-05 16:51:26,667 INFO sqlalchemy.engine.Engine 
+CREATE TABLE maintenance_requests (
+	id INTEGER NOT NULL, 
+	section_id INTEGER NOT NULL, 
+	department_id INTEGER NOT NULL, 
+	task_description VARCHAR(500) NOT NULL, 
+	severity VARCHAR(20) NOT NULL, 
+	overdue_days INTEGER NOT NULL, 
+	duration_minutes INTEGER NOT NULL, 
+	status VARCHAR(20) NOT NULL, 
+	work_type_id INTEGER, 
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_request_severity_valid CHECK (severity IN ('critical', 'high', 'medium', 'low')), 
+	CONSTRAINT ck_request_status_valid CHECK (status IN ('pending', 'scheduled', 'unscheduled')), 
+	CONSTRAINT ck_request_duration_positive CHECK (duration_minutes > 0), 
+	CONSTRAINT ck_request_overdue_nonnegative CHECK (overdue_days >= 0), 
+	CONSTRAINT ck_request_description_nonempty CHECK (length(task_description) > 0), 
+	FOREIGN KEY(section_id) REFERENCES sections (id) ON DELETE CASCADE, 
+	FOREIGN KEY(department_id) REFERENCES departments (id) ON DELETE CASCADE, 
+	FOREIGN KEY(work_type_id) REFERENCES work_types (id) ON DELETE SET NULL
+)
+
+
+2026-09-05 16:51:26,667 INFO sqlalchemy.engine.Engine [no key 0.00004s] ()
+2026-09-05 16:51:26,667 INFO sqlalchemy.engine.Engine CREATE INDEX ix_request_section_id ON maintenance_requests (section_id)
+2026-09-05 16:51:26,667 INFO sqlalchemy.engine.Engine [no key 0.00003s] ()
+2026-09-05 16:51:26,667 INFO sqlalchemy.engine.Engine CREATE INDEX ix_request_status ON maintenance_requests (status)
+2026-09-05 16:51:26,667 INFO sqlalchemy.engine.Engine [no key 0.00002s] ()
+2026-09-05 16:51:26,668 INFO sqlalchemy.engine.Engine CREATE INDEX ix_request_department_id ON maintenance_requests (department_id)
+2026-09-05 16:51:26,668 INFO sqlalchemy.engine.Engine [no key 0.00002s] ()
+2026-09-05 16:51:26,668 INFO sqlalchemy.engine.Engine CREATE INDEX ix_request_severity ON maintenance_requests (severity)
+2026-09-05 16:51:26,668 INFO sqlalchemy.engine.Engine [no key 0.00002s] ()
+2026-09-05 16:51:26,669 INFO sqlalchemy.engine.Engine 
+CREATE TABLE work_compatibility_rules (
+	id INTEGER NOT NULL, 
+	work_type_a_id INTEGER NOT NULL, 
+	work_type_b_id INTEGER NOT NULL, 
+	is_compatible BOOLEAN NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT uq_work_type_pairs UNIQUE (work_type_a_id, work_type_b_id), 
+	FOREIGN KEY(work_type_a_id) REFERENCES work_types (id) ON DELETE CASCADE, 
+	FOREIGN KEY(work_type_b_id) REFERENCES work_types (id) ON DELETE CASCADE
+)
+
+
+2026-09-05 16:51:26,669 INFO sqlalchemy.engine.Engine [no key 0.00003s] ()
+2026-09-05 16:51:26,669 INFO sqlalchemy.engine.Engine 
+CREATE TABLE schedule_assignments (
+	id INTEGER NOT NULL, 
+	request_id INTEGER NOT NULL, 
+	block_window_id INTEGER NOT NULL, 
+	week_start_date DATE NOT NULL, 
+	mode VARCHAR(20) NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_assignment_mode_valid CHECK (mode IN ('manual', 'optimized')), 
+	CONSTRAINT uq_assignment_request_week_mode UNIQUE (request_id, week_start_date, mode), 
+	FOREIGN KEY(request_id) REFERENCES maintenance_requests (id) ON DELETE CASCADE, 
+	FOREIGN KEY(block_window_id) REFERENCES block_windows (id) ON DELETE CASCADE
+)
+
+
+2026-09-05 16:51:26,669 INFO sqlalchemy.engine.Engine [no key 0.00003s] ()
+2026-09-05 16:51:26,669 INFO sqlalchemy.engine.Engine CREATE INDEX ix_assignment_request_id ON schedule_assignments (request_id)
+2026-09-05 16:51:26,669 INFO sqlalchemy.engine.Engine [no key 0.00003s] ()
+2026-09-05 16:51:26,670 INFO sqlalchemy.engine.Engine CREATE INDEX ix_assignment_week_mode ON schedule_assignments (week_start_date, mode)
+2026-09-05 16:51:26,670 INFO sqlalchemy.engine.Engine [no key 0.00003s] ()
+2026-09-05 16:51:26,670 INFO sqlalchemy.engine.Engine CREATE INDEX ix_assignment_block_window_id ON schedule_assignments (block_window_id)
+2026-09-05 16:51:26,670 INFO sqlalchemy.engine.Engine [no key 0.00002s] ()
+2026-09-05 16:51:26,671 INFO sqlalchemy.engine.Engine COMMIT
+2026-09-05 16:51:26,676 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-09-05 16:51:26,678 INFO sqlalchemy.engine.Engine SELECT count(*) AS count_1 
+FROM (SELECT departments.id AS departments_id, departments.name AS departments_name, departments.short_code AS departments_short_code 
+FROM departments) AS anon_1
+2026-09-05 16:51:26,678 INFO sqlalchemy.engine.Engine [generated in 0.00008s] ()
+2026-09-05 16:51:26,678 INFO sqlalchemy.engine.Engine INSERT INTO departments (name, short_code) VALUES (?, ?) RETURNING id
+2026-09-05 16:51:26,678 INFO sqlalchemy.engine.Engine [generated in 0.00005s (insertmanyvalues) 1/3 (ordered; batch not supported)] ('Engineering', 'ENGG')
+2026-09-05 16:51:26,679 INFO sqlalchemy.engine.Engine INSERT INTO departments (name, short_code) VALUES (?, ?) RETURNING id
+2026-09-05 16:51:26,679 INFO sqlalchemy.engine.Engine [insertmanyvalues 2/3 (ordered; batch not supported)] ('S&T', 'SNT')
+2026-09-05 16:51:26,679 INFO sqlalchemy.engine.Engine INSERT INTO departments (name, short_code) VALUES (?, ?) RETURNING id
+2026-09-05 16:51:26,679 INFO sqlalchemy.engine.Engine [insertmanyvalues 3/3 (ordered; batch not supported)] ('TRD', 'TRD')
+2026-09-05 16:51:26,679 INFO sqlalchemy.engine.Engine COMMIT
+2026-09-05 16:51:26,679 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-09-05 16:51:26,680 INFO sqlalchemy.engine.Engine SELECT count(*) AS count_1 
+FROM (SELECT sections.id AS sections_id, sections.code AS sections_code, sections.name AS sections_name, sections.window_start_hour AS sections_window_start_hour, sections.window_duration_hours AS sections_window_duration_hours, sections.mega_day AS sections_mega_day, sections.mega_duration_hours AS sections_mega_duration_hours, sections.slot_capacity AS sections_slot_capacity 
+FROM sections) AS anon_1
+2026-09-05 16:51:26,680 INFO sqlalchemy.engine.Engine [generated in 0.00004s] ()
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [generated in 0.00005s (insertmanyvalues) 1/15 (ordered; batch not supported)] ('sec-1', 'Delhi Junction – Agra Cantt', 60, 180, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 2/15 (ordered; batch not supported)] ('sec-2', 'Mumbai CST – Pune Jn', 30, 240, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 3/15 (ordered; batch not supported)] ('sec-3', 'Chennai Central – Bangalore City', 120, 180, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 4/15 (ordered; batch not supported)] ('sec-4', 'Howrah Jn – Kharagpur Jn', 60, 180, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 5/15 (ordered; batch not supported)] ('sec-5', 'Lucknow NR – Varanasi Jn', 0, 210, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 6/15 (ordered; batch not supported)] ('sec-6', 'Jaipur Jn – Ajmer Jn', 90, 180, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 7/15 (ordered; batch not supported)] ('sec-7', 'Secunderabad – Kazipet Jn', 1380, 240, 'Wednesday', 360, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 8/15 (ordered; batch not supported)] ('sec-8', 'Patna Jn – Gaya Jn', 60, 180, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 9/15 (ordered; batch not supported)] ('sec-9', 'Bhopal Jn – Itarsi Jn', 0, 210, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 10/15 (ordered; batch not supported)] ('sec-10', 'Visakhapatnam – Vijayawada Jn', 120, 180, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 11/15 (ordered; batch not supported)] ('sec-11', 'Coimbatore Jn – Erode Jn', 60, 180, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 12/15 (ordered; batch not supported)] ('sec-12', 'Kanpur Central – Allahabad Jn', 30, 240, 'Sunday', 360, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 13/15 (ordered; batch not supported)] ('sec-13', 'Nagpur Jn – Wardha Jn', 60, 180, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 14/15 (ordered; batch not supported)] ('sec-14', 'Ahmedabad Jn – Vadodara Jn', 90, 180, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine [insertmanyvalues 15/15 (ordered; batch not supported)] ('sec-15', 'Guwahati – New Jalpaiguri', 0, 210, None, None, 3)
+2026-09-05 16:51:26,681 INFO sqlalchemy.engine.Engine COMMIT
+------------------------------ Captured log setup ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("departments")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA temp.table_info("departments")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("sections")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA temp.table_info("sections")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("maintenance_requests")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA temp.table_info("maintenance_requests")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("schedule_assignments")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA temp.table_info("schedule_assignments")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("schedule_runs")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA temp.table_info("schedule_runs")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("block_windows")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA temp.table_info("block_windows")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("work_types")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA temp.table_info("work_types")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("work_compatibility_rules")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 PRAGMA temp.table_info("work_compatibility_rules")
+INFO     sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 
+CREATE TABLE departments (
+	id INTEGER NOT NULL, 
+	name VARCHAR(50) NOT NULL, 
+	short_code VARCHAR(10) NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_department_name_nonempty CHECK (length(name) > 0), 
+	CONSTRAINT ck_department_short_code_nonempty CHECK (length(short_code) > 0), 
+	UNIQUE (name), 
+	UNIQUE (short_code)
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 
+CREATE TABLE sections (
+	id INTEGER NOT NULL, 
+	code VARCHAR(20) NOT NULL, 
+	name VARCHAR(200) NOT NULL, 
+	window_start_hour INTEGER NOT NULL, 
+	window_duration_hours INTEGER NOT NULL, 
+	mega_day VARCHAR(10), 
+	mega_duration_hours INTEGER, 
+	slot_capacity INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_section_code_nonempty CHECK (length(code) > 0), 
+	CONSTRAINT ck_section_name_nonempty CHECK (length(name) > 0), 
+	CONSTRAINT ck_section_window_start_hour_range CHECK (window_start_hour >= 0 AND window_start_hour < 1440), 
+	CONSTRAINT ck_section_window_duration_range CHECK (window_duration_hours > 0 AND window_duration_hours <= 1440), 
+	CONSTRAINT ck_section_slot_capacity_positive CHECK (slot_capacity > 0), 
+	CONSTRAINT ck_section_mega_duration_positive CHECK (mega_duration_hours IS NULL OR mega_duration_hours > 0), 
+	UNIQUE (code)
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_section_code ON sections (code)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 
+CREATE TABLE schedule_runs (
+	id INTEGER NOT NULL, 
+	week_start_date DATE NOT NULL, 
+	mode VARCHAR(20) NOT NULL, 
+	total_hours FLOAT NOT NULL, 
+	total_windows INTEGER NOT NULL, 
+	co_located_windows INTEGER NOT NULL, 
+	unscheduled_count INTEGER NOT NULL, 
+	objective_value FLOAT, 
+	solve_time_ms INTEGER NOT NULL, 
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_run_mode_valid CHECK (mode IN ('manual', 'optimized')), 
+	CONSTRAINT ck_run_total_hours_nonneg CHECK (total_hours >= 0), 
+	CONSTRAINT ck_run_total_windows_nonneg CHECK (total_windows >= 0), 
+	CONSTRAINT ck_run_coloc_nonneg CHECK (co_located_windows >= 0), 
+	CONSTRAINT ck_run_unsched_nonneg CHECK (unscheduled_count >= 0), 
+	CONSTRAINT ck_run_solve_time_nonneg CHECK (solve_time_ms >= 0)
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_run_week_mode ON schedule_runs (week_start_date, mode)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00004s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 
+CREATE TABLE block_windows (
+	id INTEGER NOT NULL, 
+	section_id INTEGER NOT NULL, 
+	week_start_date DATE NOT NULL, 
+	day_of_week VARCHAR(10) NOT NULL, 
+	start_minute INTEGER NOT NULL, 
+	duration_minutes INTEGER NOT NULL, 
+	slot_capacity INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_bw_start_minute_range CHECK (start_minute >= 0 AND start_minute < 1440), 
+	CONSTRAINT ck_bw_duration_range CHECK (duration_minutes > 0 AND duration_minutes <= 1440), 
+	CONSTRAINT ck_bw_slot_capacity_positive CHECK (slot_capacity > 0), 
+	CONSTRAINT ck_bw_day_of_week_valid CHECK (day_of_week IN ('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')), 
+	CONSTRAINT uq_bw_section_week_day_start UNIQUE (section_id, week_start_date, day_of_week, start_minute), 
+	FOREIGN KEY(section_id) REFERENCES sections (id) ON DELETE CASCADE
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00002s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_bw_section_id ON block_windows (section_id)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00002s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_bw_week_start_date ON block_windows (week_start_date)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00002s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 
+CREATE TABLE work_types (
+	id INTEGER NOT NULL, 
+	name VARCHAR(100) NOT NULL, 
+	department_id INTEGER NOT NULL, 
+	requires_traffic_block BOOLEAN NOT NULL, 
+	requires_power_block BOOLEAN NOT NULL, 
+	requires_ohe_isolation BOOLEAN NOT NULL, 
+	requires_signal_disconnection BOOLEAN NOT NULL, 
+	PRIMARY KEY (id), 
+	UNIQUE (name), 
+	FOREIGN KEY(department_id) REFERENCES departments (id) ON DELETE CASCADE
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00002s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 
+CREATE TABLE maintenance_requests (
+	id INTEGER NOT NULL, 
+	section_id INTEGER NOT NULL, 
+	department_id INTEGER NOT NULL, 
+	task_description VARCHAR(500) NOT NULL, 
+	severity VARCHAR(20) NOT NULL, 
+	overdue_days INTEGER NOT NULL, 
+	duration_minutes INTEGER NOT NULL, 
+	status VARCHAR(20) NOT NULL, 
+	work_type_id INTEGER, 
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_request_severity_valid CHECK (severity IN ('critical', 'high', 'medium', 'low')), 
+	CONSTRAINT ck_request_status_valid CHECK (status IN ('pending', 'scheduled', 'unscheduled')), 
+	CONSTRAINT ck_request_duration_positive CHECK (duration_minutes > 0), 
+	CONSTRAINT ck_request_overdue_nonnegative CHECK (overdue_days >= 0), 
+	CONSTRAINT ck_request_description_nonempty CHECK (length(task_description) > 0), 
+	FOREIGN KEY(section_id) REFERENCES sections (id) ON DELETE CASCADE, 
+	FOREIGN KEY(department_id) REFERENCES departments (id) ON DELETE CASCADE, 
+	FOREIGN KEY(work_type_id) REFERENCES work_types (id) ON DELETE SET NULL
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00004s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_request_section_id ON maintenance_requests (section_id)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_request_status ON maintenance_requests (status)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00002s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_request_department_id ON maintenance_requests (department_id)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00002s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_request_severity ON maintenance_requests (severity)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00002s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 
+CREATE TABLE work_compatibility_rules (
+	id INTEGER NOT NULL, 
+	work_type_a_id INTEGER NOT NULL, 
+	work_type_b_id INTEGER NOT NULL, 
+	is_compatible BOOLEAN NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT uq_work_type_pairs UNIQUE (work_type_a_id, work_type_b_id), 
+	FOREIGN KEY(work_type_a_id) REFERENCES work_types (id) ON DELETE CASCADE, 
+	FOREIGN KEY(work_type_b_id) REFERENCES work_types (id) ON DELETE CASCADE
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 
+CREATE TABLE schedule_assignments (
+	id INTEGER NOT NULL, 
+	request_id INTEGER NOT NULL, 
+	block_window_id INTEGER NOT NULL, 
+	week_start_date DATE NOT NULL, 
+	mode VARCHAR(20) NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT ck_assignment_mode_valid CHECK (mode IN ('manual', 'optimized')), 
+	CONSTRAINT uq_assignment_request_week_mode UNIQUE (request_id, week_start_date, mode), 
+	FOREIGN KEY(request_id) REFERENCES maintenance_requests (id) ON DELETE CASCADE, 
+	FOREIGN KEY(block_window_id) REFERENCES block_windows (id) ON DELETE CASCADE
+)
+
+
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_assignment_request_id ON schedule_assignments (request_id)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_assignment_week_mode ON schedule_assignments (week_start_date, mode)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 CREATE INDEX ix_assignment_block_window_id ON schedule_assignments (block_window_id)
+INFO     sqlalchemy.engine.Engine:base.py:1848 [no key 0.00002s] ()
+INFO     sqlalchemy.engine.Engine:base.py:2718 COMMIT
+INFO     sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1848 SELECT count(*) AS count_1 
+FROM (SELECT departments.id AS departments_id, departments.name AS departments_name, departments.short_code AS departments_short_code 
+FROM departments) AS anon_1
+INFO     sqlalchemy.engine.Engine:base.py:1848 [generated in 0.00008s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO departments (name, short_code) VALUES (?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [generated in 0.00005s (insertmanyvalues) 1/3 (ordered; batch not supported)] ('Engineering', 'ENGG')
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO departments (name, short_code) VALUES (?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 2/3 (ordered; batch not supported)] ('S&T', 'SNT')
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO departments (name, short_code) VALUES (?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 3/3 (ordered; batch not supported)] ('TRD', 'TRD')
+INFO     sqlalchemy.engine.Engine:base.py:2718 COMMIT
+INFO     sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1848 SELECT count(*) AS count_1 
+FROM (SELECT sections.id AS sections_id, sections.code AS sections_code, sections.name AS sections_name, sections.window_start_hour AS sections_window_start_hour, sections.window_duration_hours AS sections_window_duration_hours, sections.mega_day AS sections_mega_day, sections.mega_duration_hours AS sections_mega_duration_hours, sections.slot_capacity AS sections_slot_capacity 
+FROM sections) AS anon_1
+INFO     sqlalchemy.engine.Engine:base.py:1848 [generated in 0.00004s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [generated in 0.00005s (insertmanyvalues) 1/15 (ordered; batch not supported)] ('sec-1', 'Delhi Junction – Agra Cantt', 60, 180, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 2/15 (ordered; batch not supported)] ('sec-2', 'Mumbai CST – Pune Jn', 30, 240, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 3/15 (ordered; batch not supported)] ('sec-3', 'Chennai Central – Bangalore City', 120, 180, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 4/15 (ordered; batch not supported)] ('sec-4', 'Howrah Jn – Kharagpur Jn', 60, 180, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 5/15 (ordered; batch not supported)] ('sec-5', 'Lucknow NR – Varanasi Jn', 0, 210, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 6/15 (ordered; batch not supported)] ('sec-6', 'Jaipur Jn – Ajmer Jn', 90, 180, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 7/15 (ordered; batch not supported)] ('sec-7', 'Secunderabad – Kazipet Jn', 1380, 240, 'Wednesday', 360, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 8/15 (ordered; batch not supported)] ('sec-8', 'Patna Jn – Gaya Jn', 60, 180, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 9/15 (ordered; batch not supported)] ('sec-9', 'Bhopal Jn – Itarsi Jn', 0, 210, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 10/15 (ordered; batch not supported)] ('sec-10', 'Visakhapatnam – Vijayawada Jn', 120, 180, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 11/15 (ordered; batch not supported)] ('sec-11', 'Coimbatore Jn – Erode Jn', 60, 180, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 12/15 (ordered; batch not supported)] ('sec-12', 'Kanpur Central – Allahabad Jn', 30, 240, 'Sunday', 360, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 13/15 (ordered; batch not supported)] ('sec-13', 'Nagpur Jn – Wardha Jn', 60, 180, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 14/15 (ordered; batch not supported)] ('sec-14', 'Ahmedabad Jn – Vadodara Jn', 90, 180, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO sections (code, name, window_start_hour, window_duration_hours, mega_day, mega_duration_hours, slot_capacity) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
+INFO     sqlalchemy.engine.Engine:base.py:1846 [insertmanyvalues 15/15 (ordered; batch not supported)] ('sec-15', 'Guwahati – New Jalpaiguri', 0, 210, None, None, 3)
+INFO     sqlalchemy.engine.Engine:base.py:2718 COMMIT
+----------------------------- Captured stdout call -----------------------------
+2026-09-05 16:51:26,686 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-09-05 16:51:26,686 INFO sqlalchemy.engine.Engine DELETE FROM maintenance_requests
+2026-09-05 16:51:26,686 INFO sqlalchemy.engine.Engine [generated in 0.00004s] ()
+2026-09-05 16:51:26,687 INFO sqlalchemy.engine.Engine DELETE FROM block_windows
+2026-09-05 16:51:26,687 INFO sqlalchemy.engine.Engine [generated in 0.00003s] ()
+2026-09-05 16:51:26,687 INFO sqlalchemy.engine.Engine DELETE FROM work_compatibility_rules
+2026-09-05 16:51:26,687 INFO sqlalchemy.engine.Engine [generated in 0.00003s] ()
+2026-09-05 16:51:26,687 INFO sqlalchemy.engine.Engine DELETE FROM work_types
+2026-09-05 16:51:26,687 INFO sqlalchemy.engine.Engine [generated in 0.00003s] ()
+2026-09-05 16:51:26,687 INFO sqlalchemy.engine.Engine COMMIT
+2026-09-05 16:51:26,687 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-09-05 16:51:26,687 INFO sqlalchemy.engine.Engine SELECT count(*) AS count_1 
+FROM (SELECT departments.id AS departments_id, departments.name AS departments_name, departments.short_code AS departments_short_code 
+FROM departments) AS anon_1
+2026-09-05 16:51:26,688 INFO sqlalchemy.engine.Engine [cached since 0.009963s ago] ()
+2026-09-05 16:51:26,688 INFO sqlalchemy.engine.Engine SELECT count(*) AS count_1 
+FROM (SELECT sections.id AS sections_id, sections.code AS sections_code, sections.name AS sections_name, sections.window_start_hour AS sections_window_start_hour, sections.window_duration_hours AS sections_window_duration_hours, sections.mega_day AS sections_mega_day, sections.mega_duration_hours AS sections_mega_duration_hours, sections.slot_capacity AS sections_slot_capacity 
+FROM sections) AS anon_1
+2026-09-05 16:51:26,688 INFO sqlalchemy.engine.Engine [cached since 0.007825s ago] ()
+2026-09-05 16:51:26,688 INFO sqlalchemy.engine.Engine SELECT departments.id AS departments_id, departments.name AS departments_name, departments.short_code AS departments_short_code 
+FROM departments
+2026-09-05 16:51:26,688 INFO sqlalchemy.engine.Engine [generated in 0.00003s] ()
+2026-09-05 16:51:26,688 INFO sqlalchemy.engine.Engine SELECT sections.id AS sections_id, sections.code AS sections_code, sections.name AS sections_name, sections.window_start_hour AS sections_window_start_hour, sections.window_duration_hours AS sections_window_duration_hours, sections.mega_day AS sections_mega_day, sections.mega_duration_hours AS sections_mega_duration_hours, sections.slot_capacity AS sections_slot_capacity 
+FROM sections
+2026-09-05 16:51:26,688 INFO sqlalchemy.engine.Engine [generated in 0.00004s] ()
+2026-09-05 16:51:26,688 INFO sqlalchemy.engine.Engine ROLLBACK
+------------------------------ Captured log call -------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1848 DELETE FROM maintenance_requests
+INFO     sqlalchemy.engine.Engine:base.py:1848 [generated in 0.00004s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 DELETE FROM block_windows
+INFO     sqlalchemy.engine.Engine:base.py:1848 [generated in 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 DELETE FROM work_compatibility_rules
+INFO     sqlalchemy.engine.Engine:base.py:1848 [generated in 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 DELETE FROM work_types
+INFO     sqlalchemy.engine.Engine:base.py:1848 [generated in 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:2718 COMMIT
+INFO     sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1848 SELECT count(*) AS count_1 
+FROM (SELECT departments.id AS departments_id, departments.name AS departments_name, departments.short_code AS departments_short_code 
+FROM departments) AS anon_1
+INFO     sqlalchemy.engine.Engine:base.py:1848 [cached since 0.009963s ago] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 SELECT count(*) AS count_1 
+FROM (SELECT sections.id AS sections_id, sections.code AS sections_code, sections.name AS sections_name, sections.window_start_hour AS sections_window_start_hour, sections.window_duration_hours AS sections_window_duration_hours, sections.mega_day AS sections_mega_day, sections.mega_duration_hours AS sections_mega_duration_hours, sections.slot_capacity AS sections_slot_capacity 
+FROM sections) AS anon_1
+INFO     sqlalchemy.engine.Engine:base.py:1848 [cached since 0.007825s ago] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 SELECT departments.id AS departments_id, departments.name AS departments_name, departments.short_code AS departments_short_code 
+FROM departments
+INFO     sqlalchemy.engine.Engine:base.py:1848 [generated in 0.00003s] ()
+INFO     sqlalchemy.engine.Engine:base.py:1848 SELECT sections.id AS sections_id, sections.code AS sections_code, sections.name AS sections_name, sections.window_start_hour AS sections_window_start_hour, sections.window_duration_hours AS sections_window_duration_hours, sections.mega_day AS sections_mega_day, sections.mega_duration_hours AS sections_mega_duration_hours, sections.slot_capacity AS sections_slot_capacity 
+FROM sections
+INFO     sqlalchemy.engine.Engine:base.py:1848 [generated in 0.00004s] ()
+INFO     sqlalchemy.engine.Engine:base.py:2715 ROLLBACK
+=============================== warnings summary ===============================
+.venv/lib/python3.14/site-packages/fastapi/testclient.py:1
+  /Users/shivamkumar/Documents/ggskgs back-end/backend/.venv/lib/python3.14/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv/lib/python3.14/site-packages/starlette/testclient.py:53
+  /Users/shivamkumar/Documents/ggskgs back-end/backend/.venv/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_api_schedule.py::test_schedule_run_api - AttributeError: 'D...
+======================== 1 failed, 2 warnings in 0.26s =========================
