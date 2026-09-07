@@ -161,6 +161,16 @@ export default function Requests({ nodes, edges, selectedCorridor }: RequestsPro
   const filteredRequests = useMemo(() => {
     if (!requests) return [];
     return requests.filter(r => {
+      // Filter out requests that do not belong to the currently selected corridor
+      if (nodes && nodes.length > 0) {
+        // A request's section name (e.g. "New Delhi - Agra") must match at least one node in the current corridor
+        const belongsToCorridor = nodes.some(n => 
+          r.section.toLowerCase().includes(n.name.toLowerCase()) || 
+          r.section.toLowerCase().includes(n.code.toLowerCase())
+        );
+        if (!belongsToCorridor) return false;
+      }
+
       if (search && !r.description.toLowerCase().includes(search.toLowerCase()) && !r.section.toLowerCase().includes(search.toLowerCase()) && !r.id.toLowerCase().includes(search.toLowerCase())) return false;
       if (filterDept && r.department !== filterDept) return false;
       if (filterSeverity && r.severity !== filterSeverity) return false;

@@ -210,7 +210,7 @@ export default function App() {
         </div>
 
         {/* SIDE PANEL */}
-        {isPanelOpen && (
+        {isPanelOpen && activeTab !== 'MAINTENANCE' && (
           <aside className="w-80 shrink-0 border-l border-rail-border bg-slate-950 flex flex-col shadow-xl z-20">
              
              {/* SECTOR EXPLORER */}
