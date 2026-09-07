@@ -3,7 +3,7 @@
 // ============================================================
 
 import { useState, useMemo } from 'react';
-import { Table2, GanttChart, Filter } from 'lucide-react';
+import { Table2, GanttChart, Filter, Zap } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -14,8 +14,8 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
-import { Card, Badge, Toggle, Tabs, Skeleton } from '../../components/ui';
-import { useSchedule } from '../../api/maintenanceHooks';
+import { Card, Badge, Toggle, Tabs, Skeleton, EmptyState, Button } from '../../components/ui';
+import { useSchedule, useRunSchedule } from '../../api/maintenanceHooks';
 import { DEPARTMENT_BADGE_CLASSES, DEPARTMENT_COLORS, DEPARTMENTS } from '../../lib/constants';
 import type { ScheduleMode, Department } from '../../lib/types';
 
@@ -26,6 +26,7 @@ export default function Schedule() {
   const [filterDay, setFilterDay] = useState('');
 
   const { data: schedule, isLoading } = useSchedule('2026-10-05', mode);
+  const runSchedule = useRunSchedule();
 
   const filteredEntries = useMemo(() => {
     if (!schedule || !schedule.map_data) return [];
@@ -128,98 +129,132 @@ export default function Schedule() {
 
       {/* Table View */}
       {view === 'table' && (
-        <Card className="overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Block Window</th>
-                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Section</th>
-                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Assigned Requests</th>
-                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Departments</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredEntries.map((entry, idx) => (
-                  <ScheduleTableRow key={idx} entry={entry} />
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+        filteredEntries.length === 0 ? (
+          <EmptyState
+            icon={<Zap className="w-8 h-8 text-yellow-500" />}
+            title="No Schedule Generated"
+            description="Run the AI optimizer to process pending maintenance requests and generate an optimal schedule."
+            action={
+              <Button 
+                onClick={() => runSchedule.mutate()}
+                loading={runSchedule.isPending}
+                icon={<Zap className="w-4 h-4" />}
+              >
+                Run Optimizer
+              </Button>
+            }
+          />
+        ) : (
+          <Card className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                    <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Block Window</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Section</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Assigned Requests</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Departments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredEntries.map((entry, idx) => (
+                    <ScheduleTableRow key={idx} entry={entry} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )
       )}
 
       {/* Timeline View */}
       {view === 'timeline' && (
-        <Card className="p-6">
-          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">
-            Block Schedule Timeline
-          </h3>
-          <div className="h-100">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={timelineData}
-                layout="vertical"
-                barSize={24}
-                margin={{ top: 5, right: 30, bottom: 5, left: 120 }}
+        filteredEntries.length === 0 ? (
+          <EmptyState
+            icon={<Zap className="w-8 h-8 text-yellow-500" />}
+            title="No Schedule Generated"
+            description="Run the AI optimizer to process pending maintenance requests and generate an optimal schedule."
+            action={
+              <Button 
+                onClick={() => runSchedule.mutate()}
+                loading={runSchedule.isPending}
+                icon={<Zap className="w-4 h-4" />}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
-                <XAxis
-                  type="number"
-                  tick={{ fontSize: 11, fill: '#94a3b8' }}
-                  axisLine={false}
-                  tickLine={false}
-                  label={{ value: 'Hours', position: 'bottom', fontSize: 11, fill: '#94a3b8' }}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="section"
-                  tick={{ fontSize: 11, fill: '#94a3b8' }}
-                  axisLine={false}
-                  tickLine={false}
-                  width={110}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#1e293b',
-                    border: 'none',
-                    borderRadius: '12px',
-                    color: '#e2e8f0',
-                    fontSize: '12px',
-                  }}
-                  formatter={(value: unknown, name: unknown) => {
-                    const cleanName = String(name).replace('block_', 'Block ');
-                    return [`${value}h`, cleanName];
-                  }}
-                />
-                {/* Render up to 3 blocks per section */}
-                {[0, 1, 2].map(i => (
-                  <Bar key={i} dataKey={`block_${i}`} stackId="a" radius={i === 0 ? [4, 0, 0, 4] : i === 2 ? [0, 4, 4, 0] : [0, 0, 0, 0]}>
-                    {timelineData.map((entry, idx) => {
-                      const dept = entry[`block_${i}_dept`] as Department | undefined;
-                      return (
-                        <Cell
-                          key={idx}
-                          fill={dept ? DEPARTMENT_COLORS[dept] : 'transparent'}
-                          fillOpacity={0.8}
-                        />
-                      );
-                    })}
-                  </Bar>
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          {/* Legend */}
-          <div className="flex items-center justify-center gap-6 mt-4">
-            {DEPARTMENTS.map(dept => (
-              <div key={dept} className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded" style={{ backgroundColor: DEPARTMENT_COLORS[dept] }} />
-                <span className="text-xs text-slate-500 dark:text-slate-400">{dept}</span>
-              </div>
-            ))}
-          </div>
-        </Card>
+                Run Optimizer
+              </Button>
+            }
+          />
+        ) : (
+          <Card className="p-6">
+            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">
+              Block Schedule Timeline
+            </h3>
+            <div className="h-100">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={timelineData}
+                  layout="vertical"
+                  barSize={24}
+                  margin={{ top: 5, right: 30, bottom: 5, left: 120 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+                  <XAxis
+                    type="number"
+                    tick={{ fontSize: 11, fill: '#94a3b8' }}
+                    axisLine={false}
+                    tickLine={false}
+                    label={{ value: 'Hours', position: 'bottom', fontSize: 11, fill: '#94a3b8' }}
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="section"
+                    tick={{ fontSize: 11, fill: '#94a3b8' }}
+                    axisLine={false}
+                    tickLine={false}
+                    width={110}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1e293b',
+                      border: 'none',
+                      borderRadius: '12px',
+                      color: '#e2e8f0',
+                      fontSize: '12px',
+                    }}
+                    formatter={(value: unknown, name: unknown) => {
+                      const cleanName = String(name).replace('block_', 'Block ');
+                      return [`${value}h`, cleanName];
+                    }}
+                  />
+                  {/* Render up to 3 blocks per section */}
+                  {[0, 1, 2].map(i => (
+                    <Bar key={i} dataKey={`block_${i}`} stackId="a" radius={i === 0 ? [4, 0, 0, 4] : i === 2 ? [0, 4, 4, 0] : [0, 0, 0, 0]}>
+                      {timelineData.map((entry, idx) => {
+                        const dept = entry[`block_${i}_dept`] as Department | undefined;
+                        return (
+                          <Cell
+                            key={idx}
+                            fill={dept ? DEPARTMENT_COLORS[dept] : 'transparent'}
+                            fillOpacity={0.8}
+                          />
+                        );
+                      })}
+                    </Bar>
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            {/* Legend */}
+            <div className="flex items-center justify-center gap-6 mt-4">
+              {DEPARTMENTS.map(dept => (
+                <div key={dept} className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded" style={{ backgroundColor: DEPARTMENT_COLORS[dept] }} />
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{dept}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )
       )}
     </div>
   );

@@ -134,6 +134,7 @@ def generate_mock_data(db: Session, seed: int = 26027, clear_existing: bool = Tr
             department_id=department.id,
             work_type_id=work_type.id if work_type else None,
             task_description=f"{rng.choice(tasks_pool)} {rng.randint(100, 999)}",
+            requested_date=next_monday + timedelta(days=rng.randint(0, 6)),
             severity=severity,
             overdue_days=overdue_days,
             duration_minutes=duration_minutes,

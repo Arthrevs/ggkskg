@@ -42,11 +42,11 @@ export function MaintenanceDashboard({ nodes, edges, selectedCorridor }: Mainten
           {/* Main Content Area */}
           <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950">
             <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-              {activeView === 'dashboard' && <Dashboard onNavigate={setActiveView} />}
+              {activeView === 'dashboard' && <Dashboard nodes={nodes} selectedCorridor={selectedCorridor} onNavigate={setActiveView} />}
               {activeView === 'requests' && <Requests nodes={nodes} edges={edges} selectedCorridor={selectedCorridor} />}
               {activeView === 'schedule' && <Schedule />}
               {activeView === 'compare' && <Compare />}
-              {activeView === 'stats' && <Stats />}
+              {activeView === 'stats' && <Stats nodes={nodes} selectedCorridor={selectedCorridor} />}
             </main>
           </div>
         </div>

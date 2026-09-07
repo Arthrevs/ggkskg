@@ -43,6 +43,7 @@ function mapToFrontendReq(backendReq: any): MaintenanceRequest {
     section: SECTION_MAP[backendReq.sectionId] || `Section ${backendReq.sectionId}`,
     department: DEPT_MAP[backendReq.departmentId] || 'Engineering',
     description: backendReq.taskDescription,
+    requestedDate: backendReq.requestedDate,
     duration: backendReq.durationMinutes,
     severity: backendReq.severity,
     overdueDays: backendReq.overdueDays,
@@ -51,11 +52,19 @@ function mapToFrontendReq(backendReq: any): MaintenanceRequest {
   };
 }
 
+function invalidateAll(queryClient: ReturnType<typeof useQueryClient>) {
+  queryClient.invalidateQueries({ queryKey: queryKeys.requests });
+  queryClient.invalidateQueries({ queryKey: queryKeys.stats });
+  queryClient.invalidateQueries({ queryKey: ['schedule'] });
+  queryClient.invalidateQueries({ queryKey: queryKeys.compare });
+}
+
 function mapToBackendPayload(frontendPayload: any) {
   return {
     sectionId: SECTION_ID_MAP[frontendPayload.section] || 21,
     departmentId: DEPT_ID_MAP[frontendPayload.department] || 1,
     taskDescription: frontendPayload.description,
+    requestedDate: frontendPayload.requestedDate,
     durationMinutes: frontendPayload.duration,
     severity: frontendPayload.severity,
     overdueDays: frontendPayload.overdueDays,
@@ -81,7 +90,7 @@ export function useCreateRequest() {
       return mapToFrontendReq(data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.requests });
+      invalidateAll(queryClient);
     },
   });
 }
@@ -121,7 +130,7 @@ export function useRunSchedule() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['schedule'] });
+      invalidateAll(queryClient);
     },
   });
 }

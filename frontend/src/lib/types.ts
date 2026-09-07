@@ -12,6 +12,7 @@ export interface MaintenanceRequest {
   section: string;
   department: Department;
   description: string;
+  requestedDate: string; // ISO date string
   duration: number; // minutes
   severity: Severity;
   overdueDays: number;
@@ -23,6 +24,7 @@ export interface CreateRequestPayload {
   section: string;
   department: Department;
   description: string;
+  requestedDate: string;
   duration: number;
   severity: Severity;
   overdueDays: number;

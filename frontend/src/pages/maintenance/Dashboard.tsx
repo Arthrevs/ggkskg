@@ -1,7 +1,4 @@
-// ============================================================
-// Dashboard Page
-// ============================================================
-
+import { useMemo } from 'react';
 import {
   ClipboardList,
   CalendarCheck,
@@ -23,26 +20,56 @@ import {
   Legend,
 } from 'recharts';
 import { StatCard, Card, Button, SkeletonCard } from '../../components/ui';
-import { useRequests, useRunSchedule } from '../../api/maintenanceHooks';
+import { useRequests, useRunSchedule, useStats, useSections } from '../../api/maintenanceHooks';
 import { SEVERITY_COLORS } from '../../lib/constants';
 import { useToast } from '../../hooks/useToast';
 import type { Severity } from '../../lib/types';
+import type { StationNode } from '../../lib/corridorTypes';
 
-export default function Dashboard({ onNavigate }: { onNavigate?: (path: string) => void }) {
-  const { data: requests, isLoading } = useRequests();
+interface DashboardProps {
+  nodes?: StationNode[];
+  selectedCorridor?: string;
+  onNavigate?: (path: string) => void;
+}
+
+export default function Dashboard({ nodes, selectedCorridor, onNavigate }: DashboardProps) {
+  const { data: requests, isLoading: reqLoading } = useRequests();
+  const { data: backendStats, isLoading: statsLoading } = useStats();
+  const { data: sections } = useSections();
   const runSchedule = useRunSchedule();
   const { addToast } = useToast();
 
+  const isLoading = reqLoading || statsLoading;
+
+  const activeSectionName = useMemo(() => {
+    if (!sections || sections.length === 0) return '';
+    if (!selectedCorridor) return sections[0].name;
+    
+    const [sourceCode] = selectedCorridor.split('-');
+    const sourceNode = nodes?.find(n => n.code === sourceCode);
+    const searchString = sourceNode ? sourceNode.name.toLowerCase() : sourceCode.toLowerCase();
+
+    const match = sections.find(s => s.name.toLowerCase().includes(searchString));
+    return match ? match.name : sections[0].name;
+  }, [sections, selectedCorridor, nodes]);
+
+  // Filter requests by corridor strictly
+  const corridorRequests = useMemo(() => {
+    if (!requests) return [];
+    if (!activeSectionName) return requests;
+    return requests.filter(r => r.section === activeSectionName);
+  }, [requests, activeSectionName]);
+
   const stats = {
-    total: requests?.length || 0,
-    scheduled: requests?.filter(r => r.status === 'scheduled').length || 0,
-    unscheduled: requests?.filter(r => r.status === 'unscheduled' || r.status === 'pending').length || 0,
-    windows: Math.ceil((requests?.filter(r => r.status === 'scheduled').length || 0) / 2),
+    total: corridorRequests.length,
+    scheduled: corridorRequests.filter(r => r.status === 'scheduled').length,
+    unscheduled: corridorRequests.filter(r => r.status === 'unscheduled' || r.status === 'pending').length,
+    windows: backendStats?.windowsUsed ?? 0,
   };
 
   const severityData = (['critical', 'high', 'medium', 'low'] as Severity[]).map(sev => ({
     name: sev.charAt(0).toUpperCase() + sev.slice(1),
-    value: requests?.filter(r => r.severity === sev).length || 0,
+    value: corridorRequests.filter(r => r.severity === sev).length,
     fill: SEVERITY_COLORS[sev],
   }));
 
@@ -215,8 +242,8 @@ export default function Dashboard({ onNavigate }: { onNavigate?: (path: string) 
           Critical & High Priority Requests
         </h3>
         <div className="space-y-3">
-          {requests
-            ?.filter(r => r.severity === 'critical' || r.severity === 'high')
+          {corridorRequests
+            .filter(r => r.severity === 'critical' || r.severity === 'high')
             .slice(0, 5)
             .map(req => (
               <div

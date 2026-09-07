@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
@@ -9,6 +9,7 @@ class MaintenanceRequestBase(BaseModel):
     department_id: int
     work_type_id: int | None = None
     task_description: str
+    requested_date: date
     severity: str
     overdue_days: int
     duration_minutes: int
@@ -48,6 +49,7 @@ class MaintenanceRequestUpdate(BaseModel):
     department_id: int | None = None
     work_type_id: int | None = None
     task_description: str | None = None
+    requested_date: date | None = None
     severity: str | None = None
     overdue_days: int | None = None
     duration_minutes: int | None = None

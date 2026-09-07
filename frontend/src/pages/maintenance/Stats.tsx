@@ -2,6 +2,7 @@
 // Stats Page — KPIs, Charts, Export
 // ============================================================
 
+import { useMemo } from 'react';
 import {
   Clock,
   LayoutGrid,
@@ -9,6 +10,7 @@ import {
   Timer,
   FileJson,
   FileText,
+  ClipboardList,
 } from 'lucide-react';
 import {
   BarChart,
@@ -26,13 +28,90 @@ import {
   Legend,
 } from 'recharts';
 import { Card, StatCard, Skeleton, Button } from '../../components/ui';
-import { useStats } from '../../api/maintenanceHooks';
+import { useStats, useRequests, useSections } from '../../api/maintenanceHooks';
 import { SEVERITY_COLORS, DEPARTMENT_COLORS } from '../../lib/constants';
 import { downloadJSON, downloadCSV } from '../../lib/utils';
 import type { Severity, Department } from '../../lib/types';
+import type { StationNode } from '../../lib/corridorTypes';
 
-export default function Stats() {
-  const { data: stats, isLoading } = useStats();
+interface StatsProps {
+  nodes?: StationNode[];
+  selectedCorridor?: string;
+}
+
+export default function Stats({ nodes, selectedCorridor }: StatsProps) {
+  const { data: backendStats, isLoading: statsLoading } = useStats();
+  const { data: requests, isLoading: reqLoading } = useRequests();
+  const { data: sections } = useSections();
+
+  const isLoading = statsLoading || reqLoading;
+
+  const activeSectionName = useMemo(() => {
+    if (!sections || sections.length === 0) return '';
+    if (!selectedCorridor) return sections[0].name;
+    
+    const [sourceCode] = selectedCorridor.split('-');
+    const sourceNode = nodes?.find(n => n.code === sourceCode);
+    const searchString = sourceNode ? sourceNode.name.toLowerCase() : sourceCode.toLowerCase();
+
+    const match = sections.find(s => s.name.toLowerCase().includes(searchString));
+    return match ? match.name : sections[0].name;
+  }, [sections, selectedCorridor, nodes]);
+
+  // Filter requests by corridor strictly
+  const corridorRequests = useMemo(() => {
+    if (!requests) return [];
+    if (!activeSectionName) return requests;
+    return requests.filter(r => r.section === activeSectionName);
+  }, [requests, activeSectionName]);
+
+  // Compute stats from corridor-filtered requests
+  const stats = useMemo(() => {
+    if (!corridorRequests.length) return null;
+
+    const byDept: Record<string, number> = {};
+    const bySev: Record<string, number> = {};
+    const deptHours: Record<string, number> = {};
+
+    for (const r of corridorRequests) {
+      byDept[r.department] = (byDept[r.department] || 0) + 1;
+      bySev[r.severity] = (bySev[r.severity] || 0) + 1;
+      deptHours[r.department] = (deptHours[r.department] || 0) + r.duration / 60;
+    }
+
+    return {
+      totalRequests: corridorRequests.length,
+      totalHoursScheduled: backendStats?.totalHoursScheduled ?? 0,
+      windowsUsed: backendStats?.windowsUsed ?? 0,
+      colocatedBlocks: backendStats?.colocatedBlocks ?? 0,
+      solverTimeMs: backendStats?.solverTimeMs ?? 0,
+      requestsByDepartment: byDept,
+      requestsBySeverity: bySev,
+      requestsOverTime: backendStats?.requestsOverTime ?? [],
+      departmentWorkload: Object.entries(deptHours).map(([dept, hours]) => ({
+        department: dept,
+        hours: Math.round(hours * 10) / 10,
+        requests: byDept[dept] || 0,
+      })),
+    };
+  }, [corridorRequests, backendStats]);
+
+  const severityPieData = stats
+    ? Object.entries(stats.requestsBySeverity).map(([sev, count]) => ({
+        name: sev.charAt(0).toUpperCase() + sev.slice(1),
+        value: count,
+        color: SEVERITY_COLORS[sev as Severity],
+      }))
+    : [];
+
+  const workloadData = stats
+    ? stats.departmentWorkload.map(d => ({
+        department: d.department,
+        hours: d.hours,
+        requests: d.requests,
+        fill: DEPARTMENT_COLORS[d.department as Department],
+      }))
+    : [];
 
   const handleExportJSON = () => {
     if (!stats) return;
@@ -43,6 +122,7 @@ export default function Stats() {
     if (!stats) return;
     const headers = ['Metric', 'Value'];
     const rows = [
+      ['Total Requests', String(stats.totalRequests)],
       ['Total Hours Scheduled', String(stats.totalHoursScheduled)],
       ['Windows Used', String(stats.windowsUsed)],
       ['Co-located Blocks', String(stats.colocatedBlocks)],
@@ -68,20 +148,15 @@ export default function Stats() {
     );
   }
 
-  if (!stats) return null;
-
-  const severityPieData = Object.entries(stats.requestsBySeverity).map(([sev, count]) => ({
-    name: sev.charAt(0).toUpperCase() + sev.slice(1),
-    value: count,
-    color: SEVERITY_COLORS[sev as Severity],
-  }));
-
-  const workloadData = stats.departmentWorkload.map(d => ({
-    department: d.department,
-    hours: d.hours,
-    requests: d.requests,
-    fill: DEPARTMENT_COLORS[d.department as Department],
-  }));
+  if (!stats) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[50vh] text-slate-500">
+        <ClipboardList className="w-12 h-12 mb-4 text-slate-300 dark:text-slate-700" />
+        <h3 className="text-lg font-medium text-slate-700 dark:text-slate-300">No requests found</h3>
+        <p className="text-sm">Create some maintenance requests to see statistics.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">
