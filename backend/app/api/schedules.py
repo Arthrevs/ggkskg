@@ -15,8 +15,7 @@ router = APIRouter(prefix="/api/schedule", tags=["schedule"])
 @router.post("/run", response_model=ScheduleRunResponse, status_code=status.HTTP_201_CREATED)
 def trigger_schedule_run(
     req: ScheduleRunRequest, 
-    db: Session = Depends(get_db),
-    current_user: User = Depends(RequireRole(["planner_admin"]))
+    db: Session = Depends(get_db)
 ):
     """Run the scheduler and persist the assignments."""
     try:
@@ -42,8 +41,7 @@ def trigger_schedule_run(
 @router.get("/compare", response_model=ScheduleComparisonResponse)
 def compare_schedules(
     week_start_date: date = Query(..., description="The week start date to compare"),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(RequireRole(["planner_admin"]))
+    db: Session = Depends(get_db)
 ):
     """Return the manual and optimized runs for the specified week side-by-side."""
     comp = get_comparison(db, week_start_date)
@@ -68,8 +66,7 @@ def compare_schedules(
 def get_schedule_details(
     week_start_date: date,
     mode: str = Query("optimized", description="Must be 'manual' or 'optimized'"),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     """Retrieve an existing schedule run."""
     if mode not in ["manual", "optimized"]:

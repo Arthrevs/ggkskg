@@ -13,8 +13,7 @@ router = APIRouter(prefix="/api/mock-data", tags=["mock-data"])
 def trigger_generate_mock_data(
     seed: int = Query(42, description="Deterministic random seed"),
     clear: bool = Query(True, description="Clear existing non-reference data first"),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(RequireRole(["planner_admin"]))
+    db: Session = Depends(get_db)
 ):
     """
     Generate deterministic mock data for testing/demo purposes.

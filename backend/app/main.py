@@ -25,7 +25,7 @@ from app.api.schedules import router as schedules_router
 from app.api.stats import router as stats_router
 from app.api.mock_data import router as mock_data_router
 from app.api.auth import router as auth_router
-
+from app.api.legacy_routing import router as legacy_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -68,8 +68,7 @@ app.include_router(schedules_router)
 app.include_router(stats_router)
 app.include_router(mock_data_router)
 app.include_router(auth_router)
-
-
+app.include_router(legacy_router)
 @app.get("/health")
 def health_check():
     return {"status": "ok"}

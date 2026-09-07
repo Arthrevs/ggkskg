@@ -11,20 +11,23 @@ def build_map_data(db: Session, week_start_date: date, mode: str) -> list[dict]:
     Build a map-friendly structure for Leaflet integration.
     Groups schedule assignments by Block Window.
     """
-    # 1. Fetch all block windows for this week
-    windows = db.query(BlockWindow).filter(
-        BlockWindow.week_start_date == week_start_date
-    ).all()
-    
-    if not windows:
-        return []
-        
-    # 2. Fetch assignments for this run
+    # 1. Fetch assignments for this run
     assignments = db.query(ScheduleAssignment).options(
         joinedload(ScheduleAssignment.request).joinedload(MaintenanceRequest.department)
     ).filter(
         ScheduleAssignment.week_start_date == week_start_date,
         ScheduleAssignment.mode == mode
+    ).all()
+    
+    if not assignments:
+        return []
+        
+    # 2. Extract block window IDs that have assignments
+    assigned_window_ids = list({a.block_window_id for a in assignments})
+    
+    # 3. Fetch only those block windows
+    windows = db.query(BlockWindow).filter(
+        BlockWindow.id.in_(assigned_window_ids)
     ).all()
     
     # Map assignments by block window id
