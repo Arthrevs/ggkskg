@@ -1,115 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SIH26027 — Automatic Block Planning System for Indian Railways. Optimizes track maintenance scheduling across Engineering, Signal & Telecom, and Traction Distribution departments.">
-  <title>BlockPlan — Railway Block Scheduling</title>
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/pages.css">
-</head>
-<body>
-  <div class="app-layout">
-
-    <!-- ═══ Sidebar ═══ -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand">
-        <div class="logo">BP</div>
-        <div class="brand-text">
-          <span class="brand-name">BlockPlan</span>
-          <span class="brand-sub">SIH 2026 · 26027</span>
-        </div>
-      </div>
-
-      <nav class="sidebar-nav">
-        <div class="nav-section-label">Navigation</div>
-
-        <a href="#/dashboard" class="nav-link active" data-route="/dashboard">
-          <span class="nav-icon">📊</span>
-          <span class="nav-label">Dashboard</span>
-        </a>
-
-        <a href="#/requests" class="nav-link" data-route="/requests">
-          <span class="nav-icon">📝</span>
-          <span class="nav-label">Requests</span>
-        </a>
-
-        <a href="#/schedule" class="nav-link" data-route="/schedule">
-          <span class="nav-icon">📅</span>
-          <span class="nav-label">Block Schedule</span>
-        </a>
-
-        <a href="#/compare" class="nav-link" data-route="/compare">
-          <span class="nav-icon">⚖️</span>
-          <span class="nav-label">Compare</span>
-        </a>
-
-        <a href="#/sections" class="nav-link" data-route="/sections">
-          <span class="nav-icon">🛤️</span>
-          <span class="nav-label">Sections</span>
-        </a>
-
-        <div class="nav-section-label nav-section-label-spaced">System</div>
-
-        <a href="javascript:void(0)" class="nav-link" id="btn-reset-data">
-          <span class="nav-icon">🔄</span>
-          <span class="nav-label">Reset Mock Data</span>
-        </a>
-      </nav>
-    </aside>
-
-    <!-- ═══ Main Content ═══ -->
-    <main class="app-main">
-
-      <!-- Topbar -->
-      <header class="topbar">
-        <div class="topbar-left">
-          <h2 class="topbar-title">
-            Automatic Block Planning System
-          </h2>
-        </div>
-        <div class="topbar-right" id="role-selector-container">
-          <!-- Role selector injected by app.js -->
-        </div>
-      </header>
-
-      <!-- Page Content -->
-      <div class="app-content">
-
-        <div class="page active" id="page-dashboard">
-          <!-- Rendered by dashboard.js -->
-        </div>
-
-        <div class="page" id="page-requests">
-          <!-- Rendered by requests.js -->
-        </div>
-
-        <div class="page" id="page-schedule">
-          <!-- Rendered by schedule.js -->
-        </div>
-
-        <div class="page" id="page-compare">
-          <!-- Rendered by compare.js -->
-        </div>
-
-        <div class="page" id="page-sections">
-          <!-- Rendered by sections.js -->
-        </div>
-
-      </div>
-    </main>
-  </div>
-
-  <!-- App Script (ES modules) -->
-  <script type="module" src="js/app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frontend</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
