@@ -5,7 +5,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.models.request import MaintenanceRequest
+    from app.models.block_window import BlockWindow
 class Section(Base):
     __tablename__ = "sections"
     __table_args__ = (

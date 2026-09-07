@@ -79,3 +79,9 @@ htmlcov/
 *.o
 *.obj
 *.dylib
+
+# ───── Large Data Files ─────
+backend/data/*.json
+backend/data/*.geojson
+backend/data/osm_cache/*.json
+railways-master/**/*.json

@@ -10,6 +10,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.models.request import MaintenanceRequest
+    from app.models.block_window import BlockWindow
 
 class ScheduleAssignment(Base):
     """Maps a request to a block window in a specific schedule run."""

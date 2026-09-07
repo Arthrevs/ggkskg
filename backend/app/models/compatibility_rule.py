@@ -3,7 +3,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.models.work_type import WorkType
 class WorkCompatibilityRule(Base):
     __tablename__ = "work_compatibility_rules"
     __table_args__ = (

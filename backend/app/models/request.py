@@ -1,12 +1,19 @@
 """MaintenanceRequest model — individual maintenance work items from departments."""
 
 import datetime as dt
+from typing import TYPE_CHECKING
 
 from sqlalchemy import CheckConstraint, Index, String, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from app.db.base import Base
+
+if TYPE_CHECKING:
+    from app.models.section import Section
+    from app.models.department import Department
+    from app.models.work_type import WorkType
+    from app.models.assignment import ScheduleAssignment
 
 
 class MaintenanceRequest(Base):

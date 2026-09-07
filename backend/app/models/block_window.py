@@ -10,7 +10,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.models.section import Section
+    from app.models.assignment import ScheduleAssignment
 class BlockWindow(Base):
     __tablename__ = "block_windows"
     __table_args__ = (

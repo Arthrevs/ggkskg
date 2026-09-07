@@ -3,7 +3,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
-
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.models.department import Department
+    from app.models.request import MaintenanceRequest
 class WorkType(Base):
     __tablename__ = "work_types"
 
