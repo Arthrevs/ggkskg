@@ -65,11 +65,20 @@ export default function Requests({ nodes, edges, selectedCorridor }: RequestsPro
   }, [edges, nodes]);
 
   const activeSectionName = useMemo(() => {
-    if (!sections || !selectedCorridor) return '';
-    const [source] = selectedCorridor.split('-');
-    const match = sections.find(s => s.name.toLowerCase().includes(source.toLowerCase()));
-    return match ? match.name : sections[0]?.name;
-  }, [sections, selectedCorridor]);
+    if (!sections || sections.length === 0) return '';
+    if (!selectedCorridor) return sections[0].name;
+    
+    // selectedCorridor is e.g. "JP-AII"
+    const [sourceCode] = selectedCorridor.split('-');
+    
+    // Find the full station name from the nodes array (e.g. "Jaipur Jn")
+    const sourceNode = nodes?.find(n => n.code === sourceCode);
+    const searchString = sourceNode ? sourceNode.name.toLowerCase() : sourceCode.toLowerCase();
+
+    // Find a section that includes this name (e.g. "Jaipur Jn – Ajmer Jn")
+    const match = sections.find(s => s.name.toLowerCase().includes(searchString));
+    return match ? match.name : sections[0].name;
+  }, [sections, selectedCorridor, nodes]);
 
   // Form state
   const [form, setForm] = useState<CreateRequestPayload & { place?: string }>({
@@ -77,6 +86,7 @@ export default function Requests({ nodes, edges, selectedCorridor }: RequestsPro
     place: '',
     department: 'Engineering',
     description: '',
+    requestedDate: new Date().toISOString().split('T')[0],
     duration: 60,
     severity: 'medium',
     overdueDays: 0,
@@ -88,6 +98,7 @@ export default function Requests({ nodes, edges, selectedCorridor }: RequestsPro
       place: edgeOptions.length > 0 ? edgeOptions[0] : '',
       department: 'Engineering',
       description: '',
+      requestedDate: new Date().toISOString().split('T')[0],
       duration: 60,
       severity: 'medium',
       overdueDays: 0,
@@ -117,6 +128,7 @@ export default function Requests({ nodes, edges, selectedCorridor }: RequestsPro
       place,
       department: req.department,
       description,
+      requestedDate: req.requestedDate,
       duration: req.duration,
       severity: req.severity,
       overdueDays: req.overdueDays,
@@ -162,13 +174,8 @@ export default function Requests({ nodes, edges, selectedCorridor }: RequestsPro
     if (!requests) return [];
     return requests.filter(r => {
       // Filter out requests that do not belong to the currently selected corridor
-      if (nodes && nodes.length > 0) {
-        // A request's section name (e.g. "New Delhi - Agra") must match at least one node in the current corridor
-        const belongsToCorridor = nodes.some(n => 
-          r.section.toLowerCase().includes(n.name.toLowerCase()) || 
-          r.section.toLowerCase().includes(n.code.toLowerCase())
-        );
-        if (!belongsToCorridor) return false;
+      if (activeSectionName && r.section !== activeSectionName) {
+        return false;
       }
 
       if (search && !r.description.toLowerCase().includes(search.toLowerCase()) && !r.section.toLowerCase().includes(search.toLowerCase()) && !r.id.toLowerCase().includes(search.toLowerCase())) return false;
@@ -273,6 +280,7 @@ export default function Requests({ nodes, edges, selectedCorridor }: RequestsPro
                 <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                   <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">ID</th>
                   <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Section</th>
+                  <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Date</th>
                   <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Department</th>
                   <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Duration</th>
                   <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Severity</th>
@@ -293,6 +301,9 @@ export default function Requests({ nodes, edges, selectedCorridor }: RequestsPro
                     </td>
                     <td className="px-4 py-3">
                       <span className="text-slate-700 dark:text-slate-300 text-xs">{req.section}</span>
+                    </td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-400">
+                      {req.requestedDate || '-'}
                     </td>
                     <td className="px-4 py-3">
                       <Badge className={DEPARTMENT_BADGE_CLASSES[req.department]}>{req.department}</Badge>
@@ -382,7 +393,14 @@ export default function Requests({ nodes, edges, selectedCorridor }: RequestsPro
             required
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <InputField
+              label="Date"
+              type="date"
+              value={form.requestedDate}
+              onChange={e => setForm(f => ({ ...f, requestedDate: e.target.value }))}
+              required
+            />
             <InputField
               label="Duration (minutes)"
               type="number"

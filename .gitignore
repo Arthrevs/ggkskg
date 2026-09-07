@@ -85,3 +85,4 @@ backend/data/*.json
 backend/data/*.geojson
 backend/data/osm_cache/*.json
 railways-master/**/*.json
+backend/data/railway.db  

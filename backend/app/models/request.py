@@ -3,7 +3,7 @@
 import datetime as dt
 from typing import TYPE_CHECKING
 
-from sqlalchemy import CheckConstraint, Index, String, Integer, ForeignKey, DateTime
+from sqlalchemy import CheckConstraint, Index, String, Integer, ForeignKey, DateTime, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
@@ -47,6 +47,7 @@ class MaintenanceRequest(Base):
     )
 
     task_description: Mapped[str] = mapped_column(String(500), nullable=False)
+    requested_date: Mapped[dt.date] = mapped_column(Date, nullable=False)
     severity: Mapped[str] = mapped_column(String(20), nullable=False)
     overdue_days: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     duration_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
