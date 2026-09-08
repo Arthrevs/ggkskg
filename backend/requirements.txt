@@ -15,4 +15,4 @@ python-jose[cryptography]>=3.3.0
 python-multipart>=0.0.9
 supabase>=2.3.0
 geoalchemy2>=0.14.0
-shapely>=2.0.0
+shapely>=2.1.2
